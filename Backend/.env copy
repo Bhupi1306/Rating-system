@@ -1,0 +1,2 @@
+PORT="8000"
+MONGODB="mongodb+srv://Bhupi:<password>@bhupi.qli803k.mongodb.net/Ratings"
