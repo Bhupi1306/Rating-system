@@ -1,33 +1,29 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
+import Register from './pages/Register'
+import Login from './pages/login'
+import Rating from './pages/rating'
+import RefreshHandler from './components/refresehHandler'
 import './App.css'
+import "react-toastify/ReactToastify.css"
 
 function App() {
-  const [count, setCount] = useState(0)
+  
+  const[isAuthenticated, setIsAuthenticated] = useState(false)
+
+  const PrivateRoute = ({element}) => {
+    return isAuthenticated? element:  <Navigate to="/login" />
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      < RefreshHandler setIsAuthenticated={setIsAuthenticated}/>
+      <Routes>
+        <Route path='/' element={<Navigate To="/login"/>} />
+        <Route path='/register' element={<Register />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/rating' element={<PrivateRoute element={<Rating/>}/>} />
+      </Routes>
     </>
   )
 }

@@ -1,6 +1,7 @@
+
 import mongoose from "mongoose"
 
-const headSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     fullName:{
         type: String,
         required: true,
@@ -20,6 +21,11 @@ const headSchema = new mongoose.Schema({
         required: true
     },
 
+    isAdmin: {
+        type: Boolean,
+        default: false
+    },
+
     refreshToken: {
         type: String
     }
@@ -28,4 +34,4 @@ const headSchema = new mongoose.Schema({
 
 },{timestamps:true})
 
-export const Head = mongoose.model("Head",headSchema)
+export const User = mongoose.model("User",userSchema)
