@@ -6,14 +6,18 @@ const employeeSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        unique: true,
-        index: true
+        unique: true
     },
     
     fullName:{
         type: String,
         required: true,
         trim: true
+    },
+
+    department: {
+        type: String,
+        required: true
     },
 
     rating: {

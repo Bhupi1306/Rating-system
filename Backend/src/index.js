@@ -3,6 +3,7 @@ import dotenv from "dotenv"
 import bodyParser from "body-parser"
 import cors from "cors"
 import userRouter from "../Routers/user.routes.js"
+import employeeRouter from "../Routers/employee.routes.js"
 import connectDB from "../Database/db.js"
 
 
@@ -18,12 +19,10 @@ app.use(cors())
 
 
 app.use('/auth',userRouter)
+app.use('/employee',employeeRouter)
 
 connectDB()
 .then(() => {
-    app.get('/', (req,res) => {
-        res.send("heelo")
-    })
     
     app.listen(PORT, () => {
         console.log(`Running on port ${PORT}`)

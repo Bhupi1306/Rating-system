@@ -5,6 +5,7 @@ import { handleError, handleSuccess } from "../utils";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
+  // const [isAdmin, setIsAdmin] = useState("false")
   const navigate = useNavigate()
   const [info, setInfo] = useState({
     email: "",
@@ -39,14 +40,14 @@ const Login = () => {
 
       const result = await response.json()
       
-      const {success, message, jwtToken, name, error} =  result
-      console.log(message)
+      const {success, message, jwtToken, name, isAdmin, error} =  result
 
 
       if (success) {
         handleSuccess(message),
         localStorage.setItem('token', jwtToken)
         localStorage.setItem('loggedInUser', name)
+        setIsAdmin(isAdmin)
         setTimeout(() => {
           navigate('/rating')
         }, 1000);
@@ -156,5 +157,10 @@ const Login = () => {
             </>
           )
 }
+
+// export{
+//   Login,
+//   // isAdmin
+// }
 
 export default Login

@@ -49,7 +49,8 @@ const loginUser = async (req,res) => {
                 success: true,
                 jwtToken,
                 email,
-                name: user.fullName
+                name: user.fullName,
+                isAdmin: user.isAdmin
             }
         )
     } catch (error) {

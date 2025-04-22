@@ -11,7 +11,7 @@ const Rating = () => {
 
     return (
         <div>
-            <h1>{loggedInUser}</h1>
+            <h1 className="text-4xl"> Wecome, {loggedInUser}</h1>
         </div>
     )
 }
