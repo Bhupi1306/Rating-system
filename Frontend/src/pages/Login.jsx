@@ -5,7 +5,6 @@ import { handleError, handleSuccess } from "../utils";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
-  // const [isAdmin, setIsAdmin] = useState("false")
   const navigate = useNavigate()
   const [info, setInfo] = useState({
     email: "",
@@ -47,7 +46,7 @@ const Login = () => {
         handleSuccess(message),
         localStorage.setItem('token', jwtToken)
         localStorage.setItem('loggedInUser', name)
-        setIsAdmin(isAdmin)
+        localStorage.setItem('isAdmin', isAdmin)
         setTimeout(() => {
           navigate('/rating')
         }, 1000);

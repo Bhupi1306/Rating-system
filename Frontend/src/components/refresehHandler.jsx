@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 
-const refreshHandler = ({setIsAuthenticated}) => {
+const refreshHandler = ({setIsAuthenticated, setIsAdmin}) => {
 
     const navigate = useNavigate()
     const location = useLocation()
@@ -18,6 +18,10 @@ const refreshHandler = ({setIsAuthenticated}) => {
             ) {
                 navigate('/rating')
             }
+        }
+
+        if(localStorage.getItem("isAdmin")){
+            setIsAdmin("true")
         }
     })
 

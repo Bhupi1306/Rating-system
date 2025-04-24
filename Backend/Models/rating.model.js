@@ -8,7 +8,7 @@ const ratingSchema = new mongoose.Schema({
         max: [5, "Value can't be more than 5"],
     },
     
-    WorksEthics: {
+    worksEthics: {
         type: Number,
         required: true,
         min: [1, "Value can't be less than 1"],

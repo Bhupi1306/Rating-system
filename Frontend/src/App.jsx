@@ -8,11 +8,11 @@ import RefreshHandler from './components/refresehHandler'
 import './App.css'
 import "react-toastify/ReactToastify.css"
 import DeleteEmployee from './pages/DeleteEmployee'
-// import {isAdmin} from './pages/Login'
 
 function App() {
   
   const[isAuthenticated, setIsAuthenticated] = useState(false)
+  const[isAdmin, setIsAdimn] = useState(false)
 
 
   const AdminRoute = ({element}) => 
@@ -27,16 +27,17 @@ function App() {
 
   return (
     <>
-      {/* < RefreshHandler setIsAuthenticated={setIsAuthenticated}/> */}
+      {/* < RefreshHandler setIsAuthenticated={setIsAuthenticated} setIsAdmin={setIsAdimn}/> */}
       <Routes>
-        <Route path='/' element={<Navigate To="/login"/>} />
-        {/* <Route path='/register' element={<PrivateRoute element={<Rating/>}/>} /> */}
-        <Route path='/login' element={<Login />} />
-        {/* <Route path='/rating' element={<PrivateRoute element={<Rating/>}/>} /> */}
-        <Route path='/rating' element={<Rating/> }/>
+        {/* <Route path='/' element={<Navigate To="/login"/>} /> */}
         <Route path='/register' element={<Register/> }/>
-        <Route path='/add' element={<AddEmployee/>} />
-        <Route path='/remove' element={<DeleteEmployee/>} />
+          {/* <Route path='/register' element={<PrivateRoute element={<Rating/>}/>} /> */}
+          <Route path='/login' element={<Login />} />
+          {/* <Route path='/rating' element={<PrivateRoute element={<Rating/>}/>} /> */}
+          <Route path='/rating' element={<Rating/> }/>
+          <Route path='/add' element={<AddEmployee/>} />
+          <Route path='/remove' element={<DeleteEmployee/>} />
+
       </Routes>
     </>
   )

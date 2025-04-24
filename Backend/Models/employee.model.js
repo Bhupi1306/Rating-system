@@ -20,9 +20,14 @@ const employeeSchema = new mongoose.Schema({
         required: true
     },
 
+
     rating: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Rating"
+    },
+
+    monthYear: {
+        type: String,
     }
 },{timestamps: true})
 
