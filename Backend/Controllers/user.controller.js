@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken"
 
 const registerUser = async (req,res) => {
     try {
-        const {fullName, email, password} = req.body
+        const {fullName, email, password,webAccess} = req.body
         const userPresent = await User.findOne({email})
 
         if(userPresent) {
@@ -12,7 +12,7 @@ const registerUser = async (req,res) => {
         }
 
 
-        const newUser = new User({fullName, email, password})
+        const newUser = new User({fullName, email, password,webAccess})
         newUser.password = await bcrypt.hash(password, 10)
         await newUser.save()
 
@@ -48,15 +48,17 @@ const loginUser = async (req,res) => {
                 message: "Login successfull",
                 success: true,
                 jwtToken,
-                email,
+                webAccess: user.webAccess,
                 name: user.fullName,
                 isAdmin: user.isAdmin
             }
         )
     } catch (error) {
-        res.status(500).json({message: "Internal server error", success: false})
+        res.status(500).json({message: "Internal serverss error", error, success: false})
     }
 }
+
+
 
 export {
     registerUser,

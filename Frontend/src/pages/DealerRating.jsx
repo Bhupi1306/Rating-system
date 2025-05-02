@@ -3,20 +3,14 @@ import {ToastContainer} from "react-toastify"
 import { handleError, handleSuccess } from "../utils";
 
 const Shownlabels = [
-  "Productivity",
-  "Works Ethics",
-  "Professionalism",
-  "Learning Ability",
-  "Leadership",
-  "Team Work",
-  "Regularity/Attendance",
-  "Confidence",
-  "Team Building",
-  "Growth Oriented",
-  "Technical Knowledge",
-  "Company-Personal Goals Compatibility",
-  "Employees Well Being",
-  "Employee Health"
+    "Sales Turnover",
+    "Service Time",
+    "Customer Relations Index",
+    "insuranceSettlement",
+    "Finance Facilities",
+    "Staff Training",
+    "Staff Behaviour",
+    "Following Esg Guidelines"
 ];
 
 let labels = []
@@ -25,35 +19,77 @@ let departments = [
   "Select Department", // Default option
 ];
 
-export default function Rating() {
+export default function DealerRating() {
   const [ratings, setRatings] = useState({});
   const [selectedDepartment, setSelectedDepartment] = useState('');
   const [formVisible, setFormVisible] = useState(false);
   const [cardVisible, setCardVisible] = useState(false);
-  const [employeeId, setEmployeeId] = useState('');
-  const [employeeName, setEmployeeName] = useState('');
+  const [Id, setId] = useState('');
+  const [name, setName] = useState('');
 
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
 
+    const salesTurnover = <>
+    <div className="bg-gray-50 p-4 rounded-xl shadow-sm mb-4">
+    <h4 className="text-md font-semibold text-gray-700 mb-2">Sales Turnover</h4>
+    <div className="flex justify-between max-w-sm">
+      {["0-50", "50-200", "200+"].map((num) => (
+        <label
+          key={num}
+          className={`cursor-pointer px-2 py-0.3 rounded-full text-center transition-all duration-150
+            ${ratings["salesTurnover"] === String(num)
+              ? 'bg-blue-600 text-white font-semibold'
+              : 'bg-gray-200 text-gray-700 hover:bg-blue-100'}`}
+        >
+          <input
+            type="radio"
+            name={"Sales Turnover"}
+            value={num}
+            checked={ratings["Sales Turnover"] === String(num)}
+            onChange={(e) => handleRateChange("salesTurnover", e.target.value)}
+            className="hidden"
+          />
+          {num}
+        </label>
+      ))}
+        {/* <label
+          key={0}
+          className={`cursor-pointer px-2 py-0.3 rounded-full text-center transition-all duration-150
+            ${ratings[label] === String(0)
+              ? 'bg-blue-600 text-white font-semibold'
+              : 'bg-gray-200 text-gray-700 hover:bg-blue-100'}`}
+        >
+          <input
+            type="radio"
+            name={label}
+            value={0}
+            checked={ratings[label] === String(0)}
+            onChange={(e) => handleRateChange(label, e.target.value)}
+            className="hidden"
+          />
+          N/A
+        </label> */}
 
-
+    </div>
+  </div>
+</>
 
 
   // useEffect to fetch data as soon as the component is mounted
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:8000/employee/label/rating');
+        const response = await fetch('http://localhost:8000/dealer/label/rating');
         
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }
 
-        const{ratingLabels, shownDepartments} = await response.json(); 
-        labels = ratingLabels  // "productivity","worksEthics","professionalism","learningAbility",
+        const{dealerRatingLabels, shownDepartments} = await response.json(); 
+        labels = dealerRatingLabels  // "productivity","worksEthics","professionalism","learningAbility",
         shownDepartments.forEach((dept,index) => {departments[index + 1] = dept})
         if(labels.length != Shownlabels.length)
         {
@@ -86,13 +122,13 @@ export default function Rating() {
 
 
 
-  const handleEmployeeList = async (department) => {
+  const handleDealerList = async (department) => {
 
     if (department !== 'Select Department') {
       
 
       try {
-        const url = "http://localhost:8000/employee/rate"
+        const url = "http://localhost:8000/dealer/rate"
         const response = await fetch(url, {
               method: "POST",
               headers: {
@@ -102,15 +138,15 @@ export default function Rating() {
           })
 
       const result = await response.json()
-      const employees = result.employee  
+      const dealers = result.dealer  
 
       setRatings({})
-      if(employees.length != 0)
+      if(dealers.length != 0)
       {
         setCardVisible(false)
         setFormVisible(true)
-        setEmployeeId(employees[0]?.id)
-        setEmployeeName(employees[0]?.fullName)
+        setId(dealers[0]?.id)
+        setName(dealers[0]?.fullName)
       } 
       else {
         setFormVisible(false)
@@ -130,24 +166,24 @@ export default function Rating() {
 
 
   const handleDepartmentChange = (e) => {
+    console.log(e.target.value)
     const department = e.target.value;
     setSelectedDepartment(department);
 
     // Show form if a department is selected
-    handleEmployeeList(department)
+    handleDealerList(department)
    
   };
 
 
   const handleRateChange = (label, value) => {
     setRatings((prev) => ({ ...prev, [label]: value }));
-    console.log(ratings)
   };
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const isValid = labels.every(key => key in ratings && ratings[key]>=1 && ratings[key]<=5)
+    const isValid = labels.every(key => key in ratings)
     if(!isValid) {
       handleError("All fields are required")
     }else{
@@ -156,12 +192,11 @@ export default function Rating() {
       const year = new Date().getFullYear()
       const monthYear = curMonth + year
 
-      const id = employeeId
-      console.log(ratings)
+      const id = Id
   
-
+      console.log(id)
       try {
-        const url = "http://localhost:8000/employee/rate/submit"
+        const url = "http://localhost:8000/dealer/rate/submit"
         const response = await fetch(url, {
               method: "POST",
               headers: {
@@ -173,7 +208,7 @@ export default function Rating() {
       const result = await response.json()
       console.log(result)
 
-      handleEmployeeList(selectedDepartment)
+      handleDealerList(selectedDepartment)
       } catch (error) {
         
       }
@@ -182,10 +217,10 @@ export default function Rating() {
   };
 
 
-  const getEmployeeRating = async () =>
+  const getRating = async () =>
   {
     try {
-      const url = "http://localhost:8000/employee/download/rating"
+      const url = "http://localhost:8000/dealer/download/rating"
         const response = await fetch(url, {
               method: "POST",
               headers: {
@@ -201,7 +236,7 @@ export default function Rating() {
         const urlBlob = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = urlBlob;
-        link.setAttribute('download', `${selectedDepartment}_ratings.csv`);
+        link.setAttribute('download', `${selectedDepartment}_dealer_ratings.csv`);
         document.body.appendChild(link);
         link.click();
         link.remove();
@@ -212,6 +247,11 @@ export default function Rating() {
   }
 
 
+  let tempRating = labels.slice()
+  let tempShownLables = Shownlabels.slice()
+
+  tempRating.splice(0,1)
+  tempShownLables.splice(0,1)
 
 
 
@@ -232,13 +272,13 @@ export default function Rating() {
         </select>
       </div>
 
-      {/* Employee Info Card */}
+      {/* Dealer Info Card */}
       {formVisible && (
         <div className="bg-blue-50 p-6 rounded-xl shadow-lg mb-8">
-          <h3 className="text-xl font-semibold text-gray-700">Employee Information</h3>
+          <h3 className="text-xl font-semibold text-gray-700">Dealer Information</h3>
           <div className="mt-4">
-            <p><strong>Employee ID:</strong> {employeeId}</p>
-            <p><strong>Employee Name:</strong> {employeeName}</p>
+            <p><strong>Dealer ID:</strong> {Id}</p>
+            <p><strong>Dealer Name:</strong> {name}</p>
           </div>
         </div>
       )}
@@ -246,9 +286,10 @@ export default function Rating() {
       {/* Form shown only if a department is selected */}
       {formVisible && (
         <form onSubmit={handleSubmit}>
-          {labels.map((label, index) => (
+          {salesTurnover}
+          {tempRating.map((label, index) => (
             <div key={label} className="bg-gray-50 p-4 rounded-xl shadow-sm mb-4">
-              <h4 className="text-md font-semibold text-gray-700 mb-2">{Shownlabels[index]}</h4>
+              <h4 className="text-md font-semibold text-gray-700 mb-2">{tempShownLables[index]}</h4>
               <div className="flex justify-between max-w-sm">
                 {[1, 2, 3, 4, 5].map((num) => (
                   <label
@@ -311,7 +352,7 @@ export default function Rating() {
           Download the file below.
         </p>
         <button
-        onClick={getEmployeeRating}
+        onClick={getRating}
         className="inline-block px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">
           Download
         </button>

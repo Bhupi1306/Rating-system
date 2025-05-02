@@ -1,7 +1,6 @@
 import joi from "joi"
-import { departments } from "../Utils/constants.util.js"
 
-const newEmployeeValidation = (req, res, next) => 
+const newObjectValidation = (req, res, next) => 
 {
     const schema = joi.object({
         id: joi.string().required(),
@@ -19,5 +18,5 @@ const newEmployeeValidation = (req, res, next) =>
 
 
 export {
-    newEmployeeValidation
+    newObjectValidation
 }

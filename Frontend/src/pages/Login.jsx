@@ -1,15 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../assets/Logo.jpg"
 import {ToastContainer} from "react-toastify"
 import { handleError, handleSuccess } from "../utils";
 import { Link, useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = ({setIsAuthenticated, isAuthenticated}) => {
+
   const navigate = useNavigate()
   const [info, setInfo] = useState({
     email: "",
     password: ""
   })
+  const [redirect, setredirect] = useState(false)
+  useEffect(()=>{
+    if(redirect){
+      setIsAuthenticated(true)
+      navigate('/rating', {replace: true})
+    }
+  },[redirect, navigate])
 
   const handleChange = (e) => {
     const{name,value} = e.target
@@ -39,17 +47,28 @@ const Login = () => {
 
       const result = await response.json()
       
-      const {success, message, jwtToken, name, isAdmin, error} =  result
+      const {success, message, jwtToken, name,webAccess, isAdmin, error} =  result
 
 
       if (success) {
+        let next;
         handleSuccess(message),
         localStorage.setItem('token', jwtToken)
         localStorage.setItem('loggedInUser', name)
         localStorage.setItem('isAdmin', isAdmin)
+        localStorage.setItem('webAccess', webAccess)
+        setIsAuthenticated(true)
+        console.log("Running")
+        if(webAccess == "Employees") {next = "/rating"}
+        else if(webAccess == "Dealers") {next = "/dealer/rating"}
+        else if(webAccess == "Suppliers") {next = "/supplier/rating"}
+        console.log("RUnning2")
         setTimeout(() => {
-          navigate('/rating')
+          setredirect(true)
+          navigate(next, {replace: true})
+          // navigate('/rating', {replace: true})
         }, 1000);
+
       }
       else if (error) {
         const details = error?.details[0].message;
@@ -60,7 +79,7 @@ const Login = () => {
       }
 
     } catch (error) {
-      handleError(err)
+      handleError(error)
     }
 
 
@@ -149,11 +168,12 @@ const Login = () => {
                       </button>
                     </div>
                   </form>
-                  <ToastContainer />
-                  <div className="mt-4"><span className="text-gray-400"> Don't have an account?</span> <Link to="/register">Sign Up</Link></div>  
+                  <ToastContainer /> 
                 </div>
               </div>
+              
             </>
+
           )
 }
 

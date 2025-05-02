@@ -1,5 +1,7 @@
 import {Employee} from "../Models/employee.model.js"
 import { Rating } from "../Models/rating.model.js"
+import {json2csv} from "json-2-csv"
+import {ratingLabels, departments} from "../Utils/constants.util.js"
 
 const addEmployee = async (req,res) =>
 {
@@ -91,7 +93,7 @@ const showRating = async(req,res) =>
     const curMonth = new Date().toLocaleString("default",{month: "long"})
     const year = new Date().getFullYear()
     const monthYear = curMonth + year
-    const dept = ["Dept1", "Dept2", "Dept3"]
+    const dept = departments 
 
     try {
         const {department} = req.body
@@ -157,10 +159,62 @@ const rateEmployee = async(req,res) =>
     }
 
 }
+
+const downloadRating = async (req,res) => 
+    {
+        const {selectedDepartment} = req.body
+        const curMonth = new Date().toLocaleString("default",{month: "long"})
+        const year = new Date().getFullYear()
+
+        const labels = ratingLabels
+
+        if(!selectedDepartment)
+        {
+            res.status(402).json({message: "Department is required", success: false})
+        }
+
+        try {
+            const employees = await Employee.find({department: selectedDepartment}).populate('rating').lean()
+            const data = employees.map(emp => 
+            {
+                const row = {
+                    Id: emp.id,
+                    Name: emp.fullName,
+                }
+
+                
+                labels.forEach(label => {
+                    if(emp.rating[label] === 0 || emp.rating[label] === "0"){
+                        row[label] = "N/A"
+                    }
+                    else{
+                    row[label] = emp.rating?.[label] || "N/A"
+                }
+                })
+                return row
+            }
+            )
+            const csv = `# Month  ${curMonth} ${year}\n` + json2csv(data);
+            res.header("Content-type", 'text/csv')
+            res.attachment(`${selectedDepartment}_rating.csv`)
+            res.send(csv)
+
+        } catch (error) {
+            res.status(400).json({message: "Something went wrong", success: false, error })
+        }
+        
+    }
+
+
+const getRatingLabels = (req,res) =>{
+    res.json({ratingLabels, shownDepartments:departments})
+}
 export {
     addEmployee,
     checkEmployee,
     deleteEmployee,
     showRating,
-    rateEmployee
+    rateEmployee,
+    downloadRating,
+    getRatingLabels
 }

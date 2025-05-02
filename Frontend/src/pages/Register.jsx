@@ -6,13 +6,16 @@ import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
 
+  const field = ["Employees", "Dealers", "Suppliers"]
+
 
   const navigate = useNavigate()
+    const [webAccess, setwebAccess] = useState('Access')
 
   const [info, setInfo] = useState({
     fullName: "",
     email: "",
-    password: ""
+    password: "",
   })
 
   const handleChange = (e) => {
@@ -22,12 +25,22 @@ const Register = () => {
     setInfo(infoCopy)
   }
 
+  const handleDropdown = (e) => {
+
+    setwebAccess(e.target.value)
+
+  }
+
   const handleSignUp = async (e) => {
     e.preventDefault()
+    setInfo((prev) => ({
+      ...prev,
+      webAccess: webAccess
+    }))
 
     const {fullName, email, password} = info
 
-    if(!fullName || !email || !password){
+    if(!fullName || !email || !password || !field.includes(webAccess)){
       return handleError("All fields are required")
     }
 
@@ -48,10 +61,9 @@ const Register = () => {
       console.log(message)
 
       if (success) {
-        handleSuccess(message),
-        setTimeout(() => {
-          navigate('/login')
-        }, 1000);
+        handleSuccess(message)
+        setInfo((prev) => ({...prev, fullName:"", email: "", password:""}))
+        setwebAccess("Access")
       }
       else if (error) {
         const details = error?.details[0].message;
@@ -82,11 +94,11 @@ const Register = () => {
 
           <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-              <img
+              {/* <img
                 alt="Your Company"
                 src= {logo}
                 className="mx-auto h-25 w-auto"
-              />
+              /> */}
               <h2 className="mt-3 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
                 Registration
               </h2>
@@ -154,6 +166,16 @@ const Register = () => {
                     />
                   </div>
                 </div>
+                <div>
+                      <select 
+                      value = {webAccess}
+                      className="px-6 py-2 border border-gray-300 rounded-md" name="Department" id="Department" onChange={handleDropdown}>
+                        <option disabled >Access</option>
+                        {field.map((item,index) => {
+                          return <option value={item} key={index}>{item}</option>
+                        })}
+                      </select>
+                    </div>
     
                 <div>
                   <button
@@ -165,7 +187,7 @@ const Register = () => {
                 </div>
               </form>
               <ToastContainer />
-              <div className="mt-4"><span className="text-gray-400">Already have an account?</span> <Link to="/login"> Log in</Link></div>  
+              {/* <div className="mt-4"><span className="text-gray-400">Already have an account?</span> <Link to="/login"> Log in</Link></div>   */}
             </div>
           </div>
         </>

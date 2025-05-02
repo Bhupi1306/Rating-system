@@ -1,46 +1,153 @@
-import { useState } from 'react'
-import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { createBrowserRouter, createRoutesFromElements, Navigate, Outlet, Route, RouterProvider, Routes, useLocation, useNavigate } from 'react-router-dom'
 import Register from './pages/Register'
 import Login from './pages/Login'
 import Rating from './pages/rating'
-import AddEmployee from './pages/AddEmployee'
-import RefreshHandler from './components/refresehHandler'
+// import AddEmployee from './pages/AddEmployee'
 import './App.css'
 import "react-toastify/ReactToastify.css"
-import DeleteEmployee from './pages/DeleteEmployee'
+// import DeleteEmployee from './pages/DeleteEmployee'
+import Layout from './layout'
+import { isTokenValid } from './components/JwtChecker'
+import { DeleteDealer, DeleteEmployee, DeleteSupplier } from './pages/Delete'
+import { AddDealer, AddEmployee, AddSupplier } from './pages/Add'
+import DealerRating from './pages/DealerRating'
+import SupplierRating from './pages/SupplierRating'
+// import DeleteDealer from './pages/Dealers/DeleteDealer'
+
+// function App() {
+  
+//   const[isAuthenticated, setIsAuthenticated] = useState(false)
+//   const[isLoading, setIsLoading] = useState(false)
+
+
+
+//   const PrivateRoute = ({element}) => {
+//     if(isAuthenticated){
+//       return element
+//     }
+//     return  <Navigate to="/login" />
+//   }
+
+
+//   const router = createBrowserRouter(
+//     createRoutesFromElements(
+//       // <RefreshHandler setIsAuthenticated={setIsAuthenticated}/>
+//       <>
+//       <Route path='/' element={<Layout isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}/>}>
+//         <Route path='' element={<Login/>} />
+//         <Route path='login' element={<Login/>} />
+//         <Route path='register' element={<PrivateRoute element={<Register/>}/>} />
+//         {/* <Route path='register' element={<Register/>} /> */}
+//         <Route path='rating' element={<PrivateRoute element={<Rating/>}/>} />
+//         <Route path='add' element={<PrivateRoute element={<AddEmployee/>}/>} />
+//         <Route path='remove' element={<PrivateRoute element={<DeleteEmployee/>}/>} />
+//       </Route>
+//     </>
+//     )
+//   )
+
+
+//   return (
+//     <>
+//       {/* < RefreshHandler setIsAuthenticated={setIsAuthenticated}/> */}
+//       {/* <Routes> */}
+//         {/* <Route path='/' element={<Navigate To="/login"/>} /> */}
+//         {/* <Route path='/register' element={<Register/> }/> */}
+//           {/* <Route path='/register' element={<PrivateRoute element={<Rating/>}/>} /> */}
+//           {/* <Route path='/login' element={<Login />} /> */}
+//           {/* <Route path='/rating' element={<PrivateRoute element={<Rating/>}/>} /> */}
+//           {/* <Route path='/rating' element={<Rating/> }/> */}
+//           {/* <Route path='/add' element={<AddEmployee/>} /> */}
+//           {/* <Route path='/remove' element={<DeleteEmployee/>} /> */}
+//       {/* </Routes> */}
+
+
+
+//     {/* <RefreshHandler setIsAuthenticated={setIsAuthenticated}/> */}
+//     <RouterProvider router={router}/>
+
+//     </>
+//   )
+// }
+
+
+
 
 function App() {
-  
-  const[isAuthenticated, setIsAuthenticated] = useState(false)
-  const[isAdmin, setIsAdimn] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true); // initial loading state is true
 
-
-  const AdminRoute = ({element}) => 
-    {
-     return isAdmin? element: <Navigate to="/rating" />
+  // Token validation & setting isAuthenticated
+  useEffect(() => {
+    console.log("useEffect running..."); // Debug: Check if useEffect is running
+    const token = localStorage.getItem('token');
+    
+    if (token && isTokenValid(token)) {
+      console.log("Token is valid, setting isAuthenticated to true.");
+      setIsAuthenticated(true);
+    } else {
+      console.log("No valid token, setting isAuthenticated to false.");
+      setIsAuthenticated(false);
     }
 
+    // After checking token, set loading to false
+    setLoading(false); 
+  }, []);  // empty dependency array to run only once when the app loads
 
-  const PrivateRoute = ({element}) => {
-    return isAuthenticated? element:  <Navigate to="/login" />
+  // Ensure that the layout doesn't render until the `loading` state is set to false
+  if (loading) {
+    console.log("Loading... still waiting for token check.");
+    return <div>Loading...</div>;  // Show loading screen until state is updated
   }
 
-  return (
-    <>
-      {/* < RefreshHandler setIsAuthenticated={setIsAuthenticated} setIsAdmin={setIsAdimn}/> */}
-      <Routes>
-        {/* <Route path='/' element={<Navigate To="/login"/>} /> */}
-        <Route path='/register' element={<Register/> }/>
-          {/* <Route path='/register' element={<PrivateRoute element={<Rating/>}/>} /> */}
-          <Route path='/login' element={<Login />} />
-          {/* <Route path='/rating' element={<PrivateRoute element={<Rating/>}/>} /> */}
-          <Route path='/rating' element={<Rating/> }/>
-          <Route path='/add' element={<AddEmployee/>} />
-          <Route path='/remove' element={<DeleteEmployee/>} />
+  const PrivateRoute = () => {
+    console.log("User is authenticated:", isAuthenticated); // Debug: Check authenticated status
 
-      </Routes>
-    </>
-  )
+    if (isAuthenticated) {
+      console.log("User is authenticated, showing private routes.");
+      return <Outlet />;
+    } else {
+      console.log("User is not authenticated, redirecting to login.");
+      return <Navigate to="/login" />;
+    }
+  };
+
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route path="/" element={<Layout isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />}>
+        
+        {/* Public Routes */}
+        <Route path="" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+        <Route path="login" element={<Login setIsAuthenticated={setIsAuthenticated} isAuthenticated={isAuthenticated} />} />
+
+        {/* Private Routes */}
+        <Route element={<PrivateRoute />}>
+          <Route path="register" element={<Register />} />
+          <Route path="rating" element={<Rating />} />
+          <Route path="add" element={<AddEmployee />} />
+          <Route path="remove" element={<DeleteEmployee />} />
+
+
+
+          <Route path="dealer/add" element={<AddDealer />} />
+          <Route path="dealer/rating" element={<DealerRating />} />
+          <Route path="dealer/remove" element={<DeleteDealer />} />
+
+          
+          <Route path="supplier/rating" element={<SupplierRating />} />
+          <Route path="supplier/add" element={<AddSupplier />} />
+          <Route path="supplier/remove" element={<DeleteSupplier />} />
+        </Route>
+
+
+
+      </Route>
+    )
+  );
+
+  return <RouterProvider router={router} />;
 }
 
-export default App
+export default App;
+

@@ -26,6 +26,11 @@ const userSchema = new mongoose.Schema({
         default: false
     },
 
+    webAccess :  {
+        type: String,
+        required: true
+    },
+
     refreshToken: {
         type: String
     }

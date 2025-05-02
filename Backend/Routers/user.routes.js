@@ -12,4 +12,5 @@ const router = Router()
 router.post('/register', signUpValidation, registerUser)
 router.post('/login', loginValidation, loginUser)
 
+
 export default router

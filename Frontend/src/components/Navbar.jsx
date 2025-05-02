@@ -1,28 +1,72 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../assets/Logo.jpg"
 import { Link, useNavigate } from "react-router-dom";
 
+// "Employees", "Dealers", "Suppliers"
 
-const Navbar = () => {
+
+const Navbar = ({isAdmin, setIsAuthenticated, isAuthenticated}) => {
     const navigate = useNavigate()
+    const [navAuth, setNavAuth] = useState(isAuthenticated)
 
     const navLinks = "ml-10 hover:text-blue-700 transition duration-300"
+    const [webAccess, setwebAccess] = useState("")
+
+useEffect(()=>{
+    setTimeout(() => {
+        setNavAuth(isAuthenticated)
+    }, 1000);
+
+    setwebAccess(localStorage.getItem("webAccess"))
+    
+})
+console.log(webAccess)
+
+    const navRoutes = {
+        Employees: <><li className={navLinks}><a href="/rating">Rating</a></li>
+        {isAdmin && <li className={navLinks}><a href="/register">Register</a></li>}
+        <li className={navLinks}><a href="/add">Add Employee</a> </li> 
+        <li className={navLinks}> <a href="/remove">Remove Employee</a></li> </>,
+
+        Suppliers: <><li className={navLinks}><a href="/supplier/rating">Rating</a></li>
+        {isAdmin && <li className={navLinks}><a href="/supplier/register">Register</a></li>}
+        <li className={navLinks}><a href="/supplier/add">Add Supplier</a> </li> 
+        <li className={navLinks}> <a href="supplier/remove">Remove Supplier</a></li> </>,
+
+        Dealers: <><li className={navLinks}><a href="/dealer/rating">Rating</a></li>
+        {isAdmin && <li className={navLinks}><a href="/dealer/register">Register</a></li>}
+        <li className={navLinks}><a href="/dealer/add">Add Dealer</a> </li> 
+        <li className={navLinks}> <a href="/dealer/remove">Remove Dealer</a></li> </>
+    }
+
+
+
     const handleClick = () => 
     {
         localStorage.clear()
-        navigate("/login")
+        setIsAuthenticated(false)
+        setNavAuth(false)
+        navigate("/login", {replace: true})
+        setTimeout(() => {
+            
+            window.location.reload()
+        }, 100);
+    }
+
+    const logoClick = () => 
+    {
+        navigate('/rating')
     }
     return (
         <>
+        {navAuth &&
         <div className="flex justify-between content-center px-10">
             <div className="">
-                <img src={logo} className="h-20" alt="LOGO" onClick={navigate('/rating')} />
+                <img src={logo} className="h-20" alt="LOGO" onClick={logoClick} />
             </div>
             <div className="content-center">
                 <ul className="flex  items-center">
-                    <li className={navLinks}><a href="/rating">Rating</a></li>
-                    <li className={navLinks}><a href="/add">Add Employee</a> </li> 
-                    <li className={navLinks}> <a href="/remove">Remove Employee</a></li>
+                    {navRoutes[webAccess]}
                     <button onClick={handleClick} className="
                     bg-blue-700
                     text-white
@@ -37,6 +81,7 @@ const Navbar = () => {
                 </ul>
             </div>
         </div>
+}
         </>
     )
 }

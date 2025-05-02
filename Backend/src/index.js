@@ -4,7 +4,9 @@ import bodyParser from "body-parser"
 import cors from "cors"
 import userRouter from "../Routers/user.routes.js"
 import employeeRouter from "../Routers/employee.routes.js"
+import dealerRouter from "../Routers/dealer.routes.js"
 import connectDB from "../Database/db.js"
+import supplierRouter from "../Routers/supplier.routes.js"
 
 
 const app = express()
@@ -20,6 +22,8 @@ app.use(cors())
 
 app.use('/auth',userRouter)
 app.use('/employee',employeeRouter)
+app.use('/dealer',dealerRouter) 
+app.use('/supplier',supplierRouter) 
 
 connectDB()
 .then(() => {
