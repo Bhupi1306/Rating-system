@@ -325,7 +325,7 @@ const labelFunc = (index, arr) => {
         </p>
         <button
         onClick={getRating}
-        className="inline-block px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">
+        className="inline-block px-4 py -2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">
           Download
         </button>
       </div>

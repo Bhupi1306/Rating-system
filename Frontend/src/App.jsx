@@ -13,6 +13,7 @@ import { DeleteDealer, DeleteEmployee, DeleteSupplier } from './pages/Delete'
 import { AddDealer, AddEmployee, AddSupplier } from './pages/Add'
 import DealerRating from './pages/DealerRating'
 import SupplierRating from './pages/SupplierRating'
+import Admin from './pages/Admin'
 // import DeleteDealer from './pages/Dealers/DeleteDealer'
 
 // function App() {
@@ -107,7 +108,8 @@ function App() {
     if (isAuthenticated) {
       console.log("User is authenticated, showing private routes.");
       return <Outlet />;
-    } else {
+    }
+    else {
       console.log("User is not authenticated, redirecting to login.");
       return <Navigate to="/login" />;
     }
@@ -123,6 +125,7 @@ function App() {
 
         {/* Private Routes */}
         <Route element={<PrivateRoute />}>
+          <Route path="admin" element={<Admin />} />
           <Route path="register" element={<Register />} />
           <Route path="rating" element={<Rating />} />
           <Route path="add" element={<AddEmployee />} />

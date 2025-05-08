@@ -11,6 +11,7 @@ const Navbar = ({isAdmin, setIsAuthenticated, isAuthenticated}) => {
 
     const navLinks = "ml-10 hover:text-blue-700 transition duration-300"
     const [webAccess, setwebAccess] = useState("")
+    
 
 useEffect(()=>{
     setTimeout(() => {
@@ -20,9 +21,12 @@ useEffect(()=>{
     setwebAccess(localStorage.getItem("webAccess"))
     
 })
-console.log(webAccess)
 
     const navRoutes = {
+        Admin: <>
+        {isAdmin && <li className={navLinks}><a href="/register">Register</a></li>}
+        <li className={navLinks}><a href="/register">New user</a> </li> </>,
+
         Employees: <><li className={navLinks}><a href="/rating">Rating</a></li>
         {isAdmin && <li className={navLinks}><a href="/register">Register</a></li>}
         <li className={navLinks}><a href="/add">Add Employee</a> </li> 
@@ -55,13 +59,16 @@ console.log(webAccess)
 
     const logoClick = () => 
     {
-        navigate('/rating')
+        if(webAccess === "Admin"){navigate("/admin")}
+        else if(webAccess === "Employees"){navigate("/rating")}
+        else if(webAccess === "Dealers"){navigate("/dealer/rating")}
+        else if(webAccess === "Suppliers"){navigate("/supplier/rating")}
     }
     return (
         <>
         {navAuth &&
         <div className="flex justify-between content-center px-10">
-            <div className="">
+            <div className="shrink-0">
                 <img src={logo} className="h-20" alt="LOGO" onClick={logoClick} />
             </div>
             <div className="content-center">

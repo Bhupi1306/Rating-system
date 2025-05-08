@@ -12,10 +12,16 @@ const Login = ({setIsAuthenticated, isAuthenticated}) => {
     password: ""
   })
   const [redirect, setredirect] = useState(false)
+  let next;
   useEffect(()=>{
     if(redirect){
+      const webAccess = localStorage.getItem("webAccess")
       setIsAuthenticated(true)
-      navigate('/rating', {replace: true})
+      if(webAccess === "Employees") {navigate('/rating')}
+      if(webAccess === "Admin") {navigate("/admin", {replace:true})}
+      else if(webAccess === "Dealers") {navigate("/dealer/rating")}
+      else if(webAccess === "Suppliers") {navigate("/supplier/rating")}
+      // navigate('/rating', {replace: true})
     }
   },[redirect, navigate])
 
@@ -51,7 +57,6 @@ const Login = ({setIsAuthenticated, isAuthenticated}) => {
 
 
       if (success) {
-        let next;
         handleSuccess(message),
         localStorage.setItem('token', jwtToken)
         localStorage.setItem('loggedInUser', name)
@@ -59,15 +64,14 @@ const Login = ({setIsAuthenticated, isAuthenticated}) => {
         localStorage.setItem('webAccess', webAccess)
         setIsAuthenticated(true)
         console.log("Running")
-        if(webAccess == "Employees") {next = "/rating"}
-        else if(webAccess == "Dealers") {next = "/dealer/rating"}
-        else if(webAccess == "Suppliers") {next = "/supplier/rating"}
-        console.log("RUnning2")
+        if(webAccess === "Employees") {next = "/rating"}
+        if(webAccess === "Admin") {next = "/admin"}
+        else if(webAccess === "Dealers") {next = "/dealer/rating"}
+        else if(webAccess === "Suppliers") {next = "/supplier/rating"}
         setTimeout(() => {
           setredirect(true)
           navigate(next, {replace: true})
-          // navigate('/rating', {replace: true})
-        }, 1000);
+        }, 500);
 
       }
       else if (error) {

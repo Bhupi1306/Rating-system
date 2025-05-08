@@ -27,7 +27,11 @@ const Register = () => {
 
   const handleDropdown = (e) => {
 
-    setwebAccess(e.target.value)
+    const access = e.target.value
+    console.log(e.target.value)
+    setwebAccess(access)
+
+    console.log(webAccess)
 
   }
 
@@ -92,7 +96,7 @@ const Register = () => {
           */}
 
 
-          <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+          <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 xl:mx-auto xl:max-w-md">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
               {/* <img
                 alt="Your Company"
@@ -182,7 +186,7 @@ const Register = () => {
                     type="submit"
                     className=" mt-10 flex w-full justify-center rounded-lg bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   >
-                    Sign Up
+                    Create User
                   </button>
                 </div>
               </form>

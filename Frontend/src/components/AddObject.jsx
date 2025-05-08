@@ -129,7 +129,7 @@ const AddObject = (ratingLabelsLink, addLink, object) => {
                   </h2>
                 </div>
         
-                <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+                <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm xl:max-w-lg">
                   <form onSubmit={handleAdd}  className="space-y-6">
     
                     <div>
