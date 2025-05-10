@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { createBrowserRouter, createRoutesFromElements, Navigate, Outlet, Route, RouterProvider, Routes, useLocation, useNavigate } from 'react-router-dom'
 import Register from './pages/Register'
 import Login from './pages/Login'
-import Rating from './pages/rating'
+import Rating from './pages/Rating'
 // import AddEmployee from './pages/AddEmployee'
 import './App.css'
 import "react-toastify/ReactToastify.css"
