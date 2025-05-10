@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "./components/Navbar";
 import { Outlet } from "react-router-dom";
-import {AdminHandler, RefreshHandler} from "./components/RefresehHandler";
-import { AuthChecker } from "./components/auth";
+
 
 
 const Layout = ({isAuthenticated, setIsAuthenticated}) => {
