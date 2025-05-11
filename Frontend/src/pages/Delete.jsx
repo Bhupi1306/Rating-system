@@ -1,19 +1,20 @@
 import React from "react";
 import DeleteObject from "../components/DeleteObject";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 
 const DeleteEmployee = () => {
-    return DeleteObject("http://localhost:8000/employee/check","http://localhost:8000/employee/delete", "Employee")
+    return DeleteObject(`${API_BASE_URL}employee/check`,`${API_BASE_URL}employee/delete`, `Employee`)
 }
 
 
 const DeleteDealer = () => {
-    return DeleteObject("http://localhost:8000/dealer/check","http://localhost:8000/dealer/delete", "Dealer")
+    return DeleteObject(`${API_BASE_URL}dealer/check`,`${API_BASE_URL}dealer/delete`, `Dealer`)
 }
 
 
 const DeleteSupplier = () => {
-    return DeleteObject("http://localhost:8000/supplier/check","http://localhost:8000/supplier/delete", "Supplier")
+    return DeleteObject(`${API_BASE_URL}supplier/check`,`${API_BASE_URL}supplier/delete`, `Supplier`)
 }
 
 

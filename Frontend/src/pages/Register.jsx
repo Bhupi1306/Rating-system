@@ -3,6 +3,7 @@ import logo from "../assets/Logo.jpg"
 import {ToastContainer} from "react-toastify"
 import { handleError, handleSuccess } from "../utils";
 import { useNavigate, Link } from "react-router-dom";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Register = () => {
 
@@ -49,7 +50,7 @@ const Register = () => {
     }
 
     try {
-      const url = "http://localhost:8000/auth/register"
+      const url = `${API_BASE_URL}auth/register`
       const response = await fetch(url, {
         method: "POST",
         headers: {

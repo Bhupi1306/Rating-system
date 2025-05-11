@@ -3,6 +3,7 @@ import logo from "../assets/Logo.jpg"
 import {ToastContainer} from "react-toastify"
 import { handleError, handleSuccess } from "../utils";
 import { Link, useNavigate } from "react-router-dom";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Login = ({setIsAuthenticated, isAuthenticated}) => {
 
@@ -42,7 +43,7 @@ const Login = ({setIsAuthenticated, isAuthenticated}) => {
     }
 
     try {
-      const url = "http://localhost:8000/auth/login"
+      const url = `${API_BASE_URL}/auth/login`
       const response = await fetch(url, {
         method: "POST",
         headers: {

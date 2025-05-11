@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {ToastContainer} from "react-toastify"
 import { handleError, handleSuccess } from "../utils";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Shownlabels = [
     "Following Esg Guidelines",
@@ -40,7 +41,7 @@ export default function SupplierRating() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:8000/supplier/label/rating');
+        const response = await fetch(`${API_BASE_URL}supplier/label/rating`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch data');
@@ -85,7 +86,7 @@ export default function SupplierRating() {
     if (department !== 'Select Department') {
 
       try {
-        const url = "http://localhost:8000/supplier/rate"
+        const url = `${API_BASE_URL}supplier/rate`
         const response = await fetch(url, {
               method: "POST",
               headers: {
@@ -153,7 +154,7 @@ export default function SupplierRating() {
   
       console.log(id)
       try {
-        const url = "http://localhost:8000/supplier/rate/submit"
+        const url = `${API_BASE_URL}supplier/rate/submit`
         const response = await fetch(url, {
               method: "POST",
               headers: {
@@ -177,7 +178,7 @@ export default function SupplierRating() {
   const getRating = async () =>
   {
     try {
-      const url = "http://localhost:8000/supplier/download/rating"
+      const url = `${API_BASE_URL}supplier/download/rating`
         const response = await fetch(url, {
               method: "POST",
               headers: {
