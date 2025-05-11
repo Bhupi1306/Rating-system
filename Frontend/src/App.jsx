@@ -121,7 +121,7 @@ function App() {
         
         {/* Public Routes */}
         <Route path="" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
-        <Route path="login" element={<Login setIsAuthenticated={setIsAuthenticated} isAuthenticated={isAuthenticated} />} />
+        <Route path="login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
 
         {/* Private Routes */}
         <Route element={<PrivateRoute />}>

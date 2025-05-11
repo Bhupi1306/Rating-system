@@ -50,7 +50,7 @@ useEffect(()=>{
         localStorage.clear()
         setIsAuthenticated(false)
         setNavAuth(false)
-        navigate("/login", {replace: true})
+        navigate("/", {replace: true})
         setTimeout(() => {
             
             window.location.reload()
