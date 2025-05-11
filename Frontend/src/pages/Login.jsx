@@ -43,7 +43,7 @@ const Login = ({setIsAuthenticated, isAuthenticated}) => {
     }
 
     try {
-      const url = `${API_BASE_URL}/auth/login`
+      const url = `${API_BASE_URL}auth/login`
       const response = await fetch(url, {
         method: "POST",
         headers: {
