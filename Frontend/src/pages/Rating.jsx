@@ -28,13 +28,13 @@ let departments = [
 
 export default function Rating() {
   const [ratings, setRatings] = useState({});
+  const [finalRatings, setfinalRatings] = useState({})
   const [selectedDepartment, setSelectedDepartment] = useState('');
   const [formVisible, setFormVisible] = useState(false);
   const [cardVisible, setCardVisible] = useState(false);
   const [employeeId, setEmployeeId] = useState('');
   const [employeeName, setEmployeeName] = useState('');
-
-
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -77,18 +77,20 @@ export default function Rating() {
     fetchData();  // Trigger the fetch as soon as the component loads
   }, []);  // Empty dependency array means this effect runs only once when the component mounts
 
+  useEffect(() => {
+    console.log(ratings)
+  }, [ratings]); 
+
   // Show loading or error messages if needed
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
+  
 
 
-
-
-
-
-
+  
+  
   const handleEmployeeList = async (department) => {
-
+    
     if (department !== 'Select Department') {
       
 
@@ -141,14 +143,19 @@ export default function Rating() {
 
 
   const handleRateChange = (label, value) => {
-    setRatings((prev) => ({ ...prev, [label]: value }));
-    console.log(ratings)
+    setRatings((prev) => {
+      const updatedRating = {...prev, [label]: value}
+      // console.log(updatedRating)
+      // return { ...prev, [label]: value };
+      return updatedRating
+    });
   };
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const isValid = labels.every(key => key in ratings && ratings[key]>=1 && ratings[key]<=5)
+    console.log(ratings)
+    const isValid = labels.every(key => key in ratings && ratings[key]>=0 && ratings[key]<=5)
     if(!isValid) {
       handleError("All fields are required")
     }else{
@@ -175,8 +182,12 @@ export default function Rating() {
       console.log(result)
 
       handleEmployeeList(selectedDepartment)
+      window.scroll({
+        top:0,
+        behavior: "smooth"
+      })
       } catch (error) {
-        
+        handleError(error)
       }
       
     }
@@ -263,7 +274,7 @@ export default function Rating() {
                       type="radio"
                       name={label}
                       value={num}
-                      checked={ratings[label] === String(num)}
+                      checked={ratings[label] == num}
                       onChange={(e) => handleRateChange(label, e.target.value)}
                       className="hidden"
                     />

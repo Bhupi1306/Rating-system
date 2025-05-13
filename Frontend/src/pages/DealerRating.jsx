@@ -210,6 +210,10 @@ export default function DealerRating() {
       console.log(result)
 
       handleDealerList(selectedDepartment)
+        window.scroll({
+        top:0,
+        behavior: "smooth"
+      })
       } catch (error) {
         
       }
