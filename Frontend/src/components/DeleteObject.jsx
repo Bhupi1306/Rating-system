@@ -129,7 +129,7 @@ const DeleteObject = (checkLink, delLink, Object) => {
 
 
 
-                <div id="deleteCard" className={`${visibility} ${cardOpacity} ${cardScale} h-auto bg-indigo-400 text-neutral-content w-96 rounded-md absolute m-auto top-0 right-0 bottom-0 left-0`}>
+                <div id="deleteCard" className={`${visibility} ${cardOpacity} ${cardScale} h-auto bg-indigo-200 text-neutral-content w-96 rounded-md absolute m-auto top-0 right-0 bottom-0 left-0`}>
                     <div className="p-10 items-center">
                         <h2 className="card-title text-2xl text-center mb-4">Are you Sure??</h2>
                         <p>{Object} ID: {id}</p>
@@ -138,7 +138,7 @@ const DeleteObject = (checkLink, delLink, Object) => {
                         <div className="text-center mt-4">
                             <button 
                             onClick={handleAccept}
-                            className="rounded-md bg-indigo-700 px-5 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Accept</button>
+                            className="rounded-md bg-indigo-500 px-5 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Accept</button>
                             <button 
                             onClick={handleDeny}
                             className="rounded-md ml-1.5 px-5 py-1.5 text-sm/6 font-semibold text-white  hover:bg-indigo-500 shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Deny</button>
