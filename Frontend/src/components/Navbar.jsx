@@ -75,13 +75,13 @@ useEffect(()=>{
                 <ul className="flex  items-center">
                     {navRoutes[webAccess]}
                     <button onClick={handleClick} className="
-                    bg-blue-700
+                    bg-indigo-700
                     text-white
                     rounded-md 
                     ml-10
                     py-2
                     px-4
-                    hover:bg-blue-600 
+                    hover:bg-indigo-600 
                     transtion
                     duration-300
                     "><li>Logout</li></button>

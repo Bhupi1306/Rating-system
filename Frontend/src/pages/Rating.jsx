@@ -246,7 +246,7 @@ export default function Rating() {
 
       {/* Employee Info Card */}
       {formVisible && (
-        <div className="bg-blue-50 p-6 rounded-xl shadow-lg mb-8">
+        <div className="bg-indigo-50 p-6 rounded-xl shadow-lg mb-8">
           <h3 className="text-xl font-semibold text-gray-700">Employee Information</h3>
           <div className="mt-4">
             <p><strong>Employee ID:</strong> {employeeId}</p>
@@ -267,8 +267,8 @@ export default function Rating() {
                     key={num}
                     className={`cursor-pointer px-2 py-0.3 rounded-full text-center transition-all duration-150
                       ${ratings[label] === String(num)
-                        ? 'bg-blue-600 text-white font-semibold'
-                        : 'bg-gray-200 text-gray-700 hover:bg-blue-100'}`}
+                        ? 'bg-indigo-500 text-white font-semibold'
+                        : 'bg-gray-200 text-gray-700 hover:bg-indigo-100'}`}
                   >
                     <input
                       type="radio"
@@ -285,8 +285,8 @@ export default function Rating() {
                     key={0}
                     className={`cursor-pointer px-2 py-0.3 rounded-full text-center transition-all duration-150
                       ${ratings[label] === String(0)
-                        ? 'bg-blue-600 text-white font-semibold'
-                        : 'bg-gray-200 text-gray-700 hover:bg-blue-100'}`}
+                        ? 'bg-indigo-500 text-white font-semibold'
+                        : 'bg-gray-200 text-gray-700 hover:bg-indigo-100'}`}
                   >
                     <input
                       type="radio"
@@ -324,7 +324,7 @@ export default function Rating() {
         </p>
         <button
         onClick={getEmployeeRating}
-        className="inline-block px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">
+        className="inline-block px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition">
           Download
         </button>
       </div>

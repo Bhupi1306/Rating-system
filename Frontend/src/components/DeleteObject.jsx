@@ -138,7 +138,7 @@ const DeleteObject = (checkLink, delLink, Object) => {
                         <div className="text-center mt-4">
                             <button 
                             onClick={handleAccept}
-                            className="rounded-md bg-indigo-500 px-5 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Accept</button>
+                            className="rounded-md bg-indigo-700 px-5 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Accept</button>
                             <button 
                             onClick={handleDeny}
                             className="rounded-md ml-1.5 px-5 py-1.5 text-sm/6 font-semibold text-white  hover:bg-indigo-500 shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Deny</button>
