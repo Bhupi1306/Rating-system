@@ -11,7 +11,7 @@ const Register = () => {
 
 
   const navigate = useNavigate()
-    const [webAccess, setwebAccess] = useState('Access')
+  const [webAccess, setwebAccess] = useState('Access')
 
   const [info, setInfo] = useState({
     fullName: "",
@@ -27,13 +27,8 @@ const Register = () => {
   }
 
   const handleDropdown = (e) => {
-
     const access = e.target.value
-    console.log(e.target.value)
     setwebAccess(access)
-
-    console.log(webAccess)
-
   }
 
   const handleSignUp = async (e) => {

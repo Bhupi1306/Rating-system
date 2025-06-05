@@ -2,12 +2,16 @@ import {json2csv} from "json-2-csv"
 import {supplierDepartments, supplierRatingLabels} from "../Utils/constants.util.js"
 import { Supplier } from "../Models/suppliers/suppliers.model.js"
 import { SupplierRating } from "../Models/suppliers/supplierRating.model.js"
+import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
+import { uploadOnCloudinary } from "../Utils/claudinary.js"
+import { googleAuth } from "../Utils/googleAuth.js"
 
 
 const addsupplier = async (req,res) =>
 {
     try {
-        const {id, fullName, department} = req.body
+        const {id, fullName, password, department} = req.body
     
         const supplierExist = await Supplier.findOne({id})
         
@@ -15,7 +19,8 @@ const addsupplier = async (req,res) =>
             return res.status(409).json({message: "Supplier already Exists", success: false})
         }
         
-        const newSupplier = new Supplier({id, fullName, department})
+        const newSupplier = new Supplier({id, fullName,password, department})
+        newSupplier.password = await bcrypt.hash(password, 10)
         await newSupplier.save()
 
         return res.status(201).json({message: "Supplier Added succesfully", success: true})
@@ -203,6 +208,122 @@ const getSupplierRatingLabels = (req,res) =>{
     res.json({supplierRatingLabels, shownDepartments:supplierDepartments})
 }
 
+const loginSupplier = async (req,res) => {
+    try {
+        const {id, password} = req.body
+        const supplier = await Supplier.findOne({id})
+        
+        if(!supplier || !id) {
+            return res.status(403).json({message: "Invalid email or password",  success: false})
+        }
+        
+        const isPasswordEqual = await bcrypt.compare(password, supplier.password)
+        if(!isPasswordEqual) {
+            return res.status(403).json({message: "Invalid email or password",  success: false})
+        }
+        
+        
+        const jwtToken =  jwt.sign(
+            { _id: supplier._id,
+                auth: "supplier"
+             },
+            process.env.JWT_SECRET,
+            {expiresIn: '24h'}
+        )
+        
+        return res.status(200).json(
+            {
+                message: "Login successfull",
+                success: true,
+                id: id,
+                fullName: supplier.fullName,
+                department: supplier.department,
+                monthYear: supplier.feedbackMonthYear,
+                jwtToken,
+            }
+        )
+    } catch (error) {
+        res.status(500).json({message: "Internal serverss error", error, success: false})
+    }
+}
+
+const feedbackSupplier = async (req,res) => {
+    const doc = await googleAuth('1zrzoZ28nzet1Ed-fD6p8YjyRasy-JUBpmLb8rgHlcrw')
+    try {
+        const {id, fullName, suggestion, problem, feedback, department,monthYear} = req.body
+        
+        if(!id || !fullName || !department || !monthYear)
+            {
+                res.status(400).json({message: "Required fields are missing", error, success: false})
+            }
+    
+            let photoLocalPath
+        if (req.files.photo) {
+             photoLocalPath = req?.files?.photo[0]?.path
+             console.log(photoLocalPath)
+        }
+        let uploadedPhoto
+        console.log(photoLocalPath)
+        
+        if(photoLocalPath)
+            {
+                uploadedPhoto = await uploadOnCloudinary(photoLocalPath)
+                if(!uploadedPhoto)
+                    {
+                        throw new error(400, "Photo is required")
+                    }
+            }
+            
+            // console.log(uploadedPhoto.url)
+            const sentFeedback ={
+                ID: id,
+                Name: fullName,
+                Department: department,
+                Suggestion: suggestion,
+                Problem: problem,
+                Feedback: feedback,
+                Photo: uploadedPhoto?.url || ""
+            }
+            
+            const sheet = doc.sheetsByTitle[monthYear]
+            let addedData
+            const headers = ["ID","Name", "Department", "Suggestion","Problem","Feedback","Photo"]
+            
+            if(sheet){
+                addedData = await sheet.addRow(sentFeedback)
+                // console.log(sheet.headerValues)
+            }
+            else {
+                const newSheet = await doc.addSheet({
+                    title: monthYear,
+                    headerValues: headers
+                })
+
+                addedData = await newSheet.addRow(sentFeedback)
+            }
+
+            if(addedData){
+                 const updatesupplier = await Supplier.findOneAndUpdate(
+                    {id},
+                    {
+                        $set:{
+                            feedbackMonthYear: monthYear
+                        }
+                    },
+                    {new: true}
+                )
+
+                res.status(201).json({message:"Feedback accepted",success:true})
+            }
+            else{
+                res.status(400).json({message: "Something went wrong", success: false})
+            }
+
+    } catch (error) {
+        res.status(500).json({message: "Internal servers error", error, success: false})
+    }
+}
+
 export {
     addsupplier,
     checkSupplier,
@@ -210,5 +331,7 @@ export {
     showSupplierRating,
     rateSupplier,
     downloadSupplierRating,
-    getSupplierRatingLabels
+    getSupplierRatingLabels,
+    feedbackSupplier,
+    loginSupplier
 }

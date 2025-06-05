@@ -2,12 +2,16 @@ import { Dealer } from "../Models/dealers/dealer.model.js"
 import {json2csv} from "json-2-csv"
 import {dealersDepartments, dealerRatingLabels} from "../Utils/constants.util.js"
 import { DealerRating } from "../Models/dealers/dealerRating.model.js"
+import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
+import { uploadOnCloudinary } from "../Utils/claudinary.js"
+import { googleAuth } from "../Utils/googleAuth.js"
 
 
 const addDealer = async (req,res) =>
 {
     try {
-        const {id, fullName, department} = req.body
+        const {id, fullName,password, department} = req.body
     
         const dealerExist = await Dealer.findOne({id})
         
@@ -15,7 +19,8 @@ const addDealer = async (req,res) =>
             return res.status(409).json({message: "Dealer already Exists", success: false})
         }
         
-        const newDealer = new Dealer({id, fullName, department})
+        const newDealer = new Dealer({id, fullName,password, department})
+        newDealer.password = await bcrypt.hash(password, 10)
         await newDealer.save()
 
         return res.status(201).json({message: "Dealer Added succesfully", success: true})
@@ -204,6 +209,121 @@ const getDealerRatingLabels = (req,res) =>{
     res.json({dealerRatingLabels, shownDepartments:dealersDepartments})
 }
 
+const loginDealer = async (req,res) => {
+    try {
+        const {id, password} = req.body
+        const dealer = await Dealer.findOne({id})
+        
+        if(!dealer || !id) {
+            return res.status(403).json({message: "Invalid email or password",  success: false})
+        }
+        
+        const isPasswordEqual = await bcrypt.compare(password, dealer.password)
+        if(!isPasswordEqual) {
+            return res.status(403).json({message: "Invalid email or password",  success: false})
+        }
+        
+        
+        const jwtToken =  jwt.sign(
+            { _id: dealer._id,
+                auth: "dealer"
+             },
+            process.env.JWT_SECRET,
+            {expiresIn: '24h'}
+        )
+        
+        return res.status(200).json(
+            {
+                message: "Login successfull",
+                success: true,
+                id: id,
+                fullName: dealer.fullName,
+                department: dealer.department,
+                monthYear: dealer.feedbackMonthYear,
+                jwtToken,
+            }
+        )
+    } catch (error) {
+        res.status(500).json({message: "Internal serverss error", error, success: false})
+    }
+}
+
+const feedbackDealer = async (req,res) => {
+    const doc = await googleAuth('1LMvhIAGiK0CmWpEmfppRC35CCFZhdP-a3RS4DuRqPSQ')
+    try {
+        const {id, fullName, suggestion, problem, feedback, department,monthYear} = req.body
+        
+        if(!id || !fullName || !department || !monthYear)
+            {
+                res.status(400).json({message: "Required fields are missing", error, success: false})
+            }
+    
+            let photoLocalPath
+        if (req.files.photo) {
+             photoLocalPath = req?.files?.photo[0]?.path
+             console.log(photoLocalPath)
+        }
+        let uploadedPhoto
+        console.log(photoLocalPath)
+        
+        if(photoLocalPath)
+            {
+                uploadedPhoto = await uploadOnCloudinary(photoLocalPath)
+                if(!uploadedPhoto)
+                    {
+                        throw new error(400, "Photo is required")
+                    }
+            }
+            
+            // console.log(uploadedPhoto.url)
+            const sentFeedback ={
+                ID: id,
+                Name: fullName,
+                Department: department,
+                Suggestion: suggestion,
+                Problem: problem,
+                Feedback: feedback,
+                Photo: uploadedPhoto?.url || ""
+            }
+            
+            const sheet = doc.sheetsByTitle[monthYear]
+            let addedData
+            const headers = ["ID","Name", "Department", "Suggestion","Problem","Feedback","Photo"]
+            
+            if(sheet){
+                addedData = await sheet.addRow(sentFeedback)
+                // console.log(sheet.headerValues)
+            }
+            else {
+                const newSheet = await doc.addSheet({
+                    title: monthYear,
+                    headerValues: headers
+                })
+
+                addedData = await newSheet.addRow(sentFeedback)
+            }
+
+            if(addedData){
+                 const updateDealer = await Dealer.findOneAndUpdate(
+                    {id},
+                    {
+                        $set:{
+                            feedbackMonthYear: monthYear
+                        }
+                    },
+                    {new: true}
+                )
+
+                res.status(201).json({message:"Feedback accepted",success:true})
+            }
+            else{
+                res.status(400).json({message: "Something went wrong", success: false})
+            }
+
+    } catch (error) {
+        res.status(500).json({message: "Internal servers error", error, success: false})
+    }
+}
 export {
     addDealer,
     checkDealer,
@@ -211,5 +331,7 @@ export {
     showDealerRating,
     rateDealer,
     downloadDealerRating,
-    getDealerRatingLabels
+    getDealerRatingLabels,
+    loginDealer,
+    feedbackDealer
 }

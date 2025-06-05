@@ -6,8 +6,10 @@ let deptNames = [];
 const AddObject = (ratingLabelsLink, addLink, object) => {
   const [info, setInfo] = useState({
     id: "",
-    fullName: ""
+    fullName: "",
+    password: "",
   })
+  const [password, setPassword] = useState("");
   const [deptDropdown, setDeptDropdown] = useState('Department')
 
   const [loading, setLoading] = useState(true);
@@ -55,6 +57,7 @@ const AddObject = (ratingLabelsLink, addLink, object) => {
     setInfo(infoCopy)
   }
 
+
   const handleDropdown = (e) => {
     setDeptDropdown(e.target.value)
   }
@@ -62,13 +65,15 @@ const AddObject = (ratingLabelsLink, addLink, object) => {
   const handleAdd = async (e) => {
     e.preventDefault()
 
-    const {id, fullName} = info
+    const {id, fullName, password} = info
     const department = deptDropdown
+
 
     const emp_info = {...info, department: department} 
 
 
-    if(!id || !fullName || !department || !deptNames.includes(department)){
+
+    if(!id || !fullName || !department || !deptNames.includes(department) || !password){
       return handleError("All fields are required")
     }
 
@@ -86,7 +91,7 @@ const AddObject = (ratingLabelsLink, addLink, object) => {
       const result = await response.json()
 
       const {success, message, error} = result
-      const empty = {id:"", fullName: ""}
+      const empty = {id:"", fullName: "", password: ""}
 
       if(success)
       {
@@ -152,7 +157,7 @@ const AddObject = (ratingLabelsLink, addLink, object) => {
 
 
                     <div>
-                      <label htmlFor="id" className="block text-sm/6 font-medium text-gray-900">
+                      <label htmlFor="fullName" className="block text-sm/6 font-medium text-gray-900">
                         Full Name
                       </label>
                       <div className="mt-2">
@@ -167,7 +172,26 @@ const AddObject = (ratingLabelsLink, addLink, object) => {
                         />
                       </div>
                     </div>
-        
+
+
+                    <div>
+                      <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
+                        Password
+                      </label>
+                      <div className="mt-2">
+                        <input
+                          onChange={handleChange}
+                          value={info.password}
+                          id="password"
+                          name="password"
+                          type="password"
+                          required
+                          className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                        />
+                      </div>
+                    </div>
+                  
+
                     <div>
                       <select 
                       value = {deptDropdown}

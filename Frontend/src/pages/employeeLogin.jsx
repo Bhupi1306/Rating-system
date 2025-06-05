@@ -1,30 +1,21 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import logo from "../assets/Logo.jpg"
 import {ToastContainer} from "react-toastify"
 import { handleError, handleSuccess } from "../utils";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-const Login = ({setIsAuthenticated}) => {
+const EmployeeLogin = () => {
+
+  const field = ["Employee", "Dealer", "Supplier"]
+  const [webAccess, setwebAccess] = useState('Access')
 
   const navigate = useNavigate()
   const [info, setInfo] = useState({
-    email: "",
+    id: "",
     password: ""
   })
-  const [redirect, setredirect] = useState(false)
-  let next;
-  useEffect(()=>{
-    if(redirect){
-      const webAccess = localStorage.getItem("webAccess")
-      setIsAuthenticated(true)
-      if(webAccess === "Employees") {navigate('/rating')}
-      if(webAccess === "Admin") {navigate("/admin", {replace:true})}
-      else if(webAccess === "Dealers") {navigate("/dealer/rating")}
-      else if(webAccess === "Suppliers") {navigate("/supplier/rating")}
-      // navigate('/rating', {replace: true})
-    }
-  },[redirect, navigate])
+
 
   const handleChange = (e) => {
     const{name,value} = e.target
@@ -33,17 +24,27 @@ const Login = ({setIsAuthenticated}) => {
     setInfo(infoCopy)
   }
 
+   const handleDropdown = (e) => {
+    const access = e.target.value
+    setwebAccess(access)
+  }
+
   const handleLogin = async (e) => {
     e.preventDefault()
 
-    const {email, password} = info
+    const {id, password} = info
+    setInfo((prev) => ({      ...prev,
+      webAccess: webAccess
+    }))
 
-    if(!email || !password){
+    if(!id || !password || !field.includes(webAccess)){
       return handleError("All fields are required")
     }
 
     try {
-      const url = `${API_BASE_URL}auth/login`
+      // const url = `${API_BASE_URL}feedback/login`
+      let url
+        url = `${API_BASE_URL}${webAccess.toLowerCase()}/feedback/login`
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -51,29 +52,21 @@ const Login = ({setIsAuthenticated}) => {
         },
         body: JSON.stringify(info)
       })
+      
 
       const result = await response.json()
-      
-      const {success, message, jwtToken, name,webAccess, isAdmin, error} =  result
+
+      const {success, message, jwtToken, fullName,id, department, monthYear, error} =  result
 
 
       if (success) {
         handleSuccess(message),
         localStorage.setItem('token', jwtToken)
-        localStorage.setItem('loggedInUser', name)
-        localStorage.setItem('isAdmin', isAdmin)
-        localStorage.setItem('webAccess', webAccess)
-        setIsAuthenticated(true)
-        console.log("Running")
-        if(webAccess === "Employees") {next = "/rating"}
-        if(webAccess === "Admin") {next = "/admin"}
-        else if(webAccess === "Dealers") {next = "/dealer/rating"}
-        else if(webAccess === "Suppliers") {next = "/supplier/rating"}
-        setTimeout(() => {
-          setredirect(true)
-          navigate(next, {replace: true})
-        }, 500);
-
+        localStorage.setItem('fullName', fullName)
+        localStorage.setItem('id', id)
+        localStorage.setItem('department', department)
+        localStorage.setItem('monthYear', monthYear)
+        navigate("/employee/form", {replace: true})
       }
       else if (error) {
         const details = error?.details[0].message;
@@ -97,8 +90,8 @@ const Login = ({setIsAuthenticated}) => {
 
     return (
             <>
+              <ToastContainer />
 
-              
               <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                   <img
@@ -115,18 +108,18 @@ const Login = ({setIsAuthenticated}) => {
                   <form onSubmit={handleLogin}  className="space-y-6">
     
                     <div>
-                      <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
-                        Email address
+                      <label htmlFor="id" className="block text-sm/6 font-medium text-gray-900">
+                        ID
                       </label>
                       <div className="mt-2">
                         <input
                           onChange={handleChange}
-                          value={info.email}
-                          id="email"
-                          name="email"
-                          type="email"
+                          value={info.id}
+                          id="id"
+                          name="id"
+                          type="text"
                           required
-                          autoComplete="email"
+                          autoComplete="id"
                           className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                         />
                       </div>
@@ -156,7 +149,19 @@ const Login = ({setIsAuthenticated}) => {
                         />
                       </div>
                     </div>
-        
+                        
+                    <div>
+                      <select 
+                      value = {webAccess}
+                      className="px-6 py-2 border border-gray-300 rounded-md" name="Department" id="Department" onChange={handleDropdown}>
+                        <option disabled >Access</option>
+                        {field?.map((item,index) => {
+                          return <option value={item} key={index}>{item}</option>
+                        })}
+                      </select>
+                    </div>
+                <div></div>
+
                     <div>
                       <button
                         type="submit"
@@ -175,9 +180,5 @@ const Login = ({setIsAuthenticated}) => {
           )
 }
 
-// export{
-//   Login,
-//   // isAdmin
-// }
 
-export default Login
+export default EmployeeLogin;

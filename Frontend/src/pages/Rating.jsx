@@ -77,9 +77,6 @@ export default function Rating() {
     fetchData();  // Trigger the fetch as soon as the component loads
   }, []);  // Empty dependency array means this effect runs only once when the component mounts
 
-  useEffect(() => {
-    console.log(ratings)
-  }, [ratings]); 
 
   // Show loading or error messages if needed
   if (loading) return <div>Loading...</div>;

@@ -20,6 +20,11 @@ const dealerSchema = new mongoose.Schema({
         required: true
     },
 
+    password: {
+        type: String,
+        required: true
+    },
+
 
     rating: {
         type: mongoose.Schema.Types.ObjectId,
@@ -28,6 +33,10 @@ const dealerSchema = new mongoose.Schema({
 
     monthYear: {
         type: String,
+    },
+
+    feedbackMonthYear: {
+        type: String
     }
 },{timestamps: true})
 

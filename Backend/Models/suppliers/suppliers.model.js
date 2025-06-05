@@ -20,6 +20,11 @@ const supplierSchema = new mongoose.Schema({
         required: true
     },
 
+    password: {
+        type: String,
+        required: true
+    },
+
 
     rating: {
         type: mongoose.Schema.Types.ObjectId,
@@ -28,7 +33,13 @@ const supplierSchema = new mongoose.Schema({
 
     monthYear: {
         type: String,
+    },
+
+    feedbackMonthYear: {
+        type: String
     }
+
+
 },{timestamps: true})
 
 export const Supplier = mongoose.model("Supplier",supplierSchema)

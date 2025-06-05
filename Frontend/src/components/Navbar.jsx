@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 const Navbar = ({isAdmin, setIsAuthenticated, isAuthenticated}) => {
     const navigate = useNavigate()
     const [navAuth, setNavAuth] = useState(isAuthenticated)
+    const [token, setToken] = useState(localStorage.getItem("token") || "");
 
     const navLinks = "ml-10 hover:text-blue-700 transition duration-300"
     const [webAccess, setwebAccess] = useState("")
@@ -18,9 +19,19 @@ useEffect(()=>{
         setNavAuth(isAuthenticated)
     }, 1000);
 
+    const verifyLogin =  () => {
+        if (!token) {
+          setNavAuth(false)
+        } else {
+          setNavAuth(true)
+        }
+      };
+
+      verifyLogin();
+
     setwebAccess(localStorage.getItem("webAccess"))
     
-})
+},[navAuth, isAuthenticated, token, navigate,setToken])
 
     const navRoutes = {
         Admin: <>

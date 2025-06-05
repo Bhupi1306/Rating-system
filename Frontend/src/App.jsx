@@ -3,10 +3,9 @@ import { createBrowserRouter, createRoutesFromElements, Navigate, Outlet, Route,
 import Register from './pages/Register'
 import Login from './pages/Login'
 import Rating from './pages/Rating'
-// import AddEmployee from './pages/AddEmployee'
 import './App.css'
 import "react-toastify/ReactToastify.css"
-// import DeleteEmployee from './pages/DeleteEmployee'
+import EmployeeLogin from './pages/employeeLogin'
 import Layout from './layout'
 import { isTokenValid } from './components/JwtChecker'
 import { DeleteDealer, DeleteEmployee, DeleteSupplier } from './pages/Delete'
@@ -14,12 +13,13 @@ import { AddDealer, AddEmployee, AddSupplier } from './pages/Add'
 import DealerRating from './pages/DealerRating'
 import SupplierRating from './pages/SupplierRating'
 import Admin from './pages/Admin'
+import {FeedbackForm} from './pages/Employee/feedbackForm'
 // import DeleteDealer from './pages/Dealers/DeleteDealer'
 
 // function App() {
-  
-//   const[isAuthenticated, setIsAuthenticated] = useState(false)
-//   const[isLoading, setIsLoading] = useState(false)
+
+  // const[isAuthenticated, setIsAuthenticated] = useState(false)
+  // const[isLoading, setIsLoading] = useState(false)
 
 
 
@@ -122,6 +122,8 @@ function App() {
         {/* Public Routes */}
         <Route path="" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+        <Route path="employee/login" element={<EmployeeLogin />} />
+        <Route path="employee/form" element={<FeedbackForm />} />
 
         {/* Private Routes */}
         <Route element={<PrivateRoute />}>
