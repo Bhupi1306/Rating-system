@@ -23,7 +23,7 @@ router.post('/add', newObjectValidation, addDealer)
 router.post('/check', checkDealer)
 router.post('/delete', deleteDealer)
 router.post('/rate', showDealerRating)
-router.post('/rate/submit',dealerRatingsValidation, rateDealer)
+router.post('/rate/submit', rateDealer)
 router.post('/download/rating', downloadDealerRating)
 router.get('/label/rating', getDealerRatingLabels)
 

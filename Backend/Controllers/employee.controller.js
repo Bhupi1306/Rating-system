@@ -139,29 +139,110 @@ const curMonth = new Date().toLocaleString("default",{month: "long"})
     }
 }
 
+// const rateEmployee = async(req,res) => 
+// {
+
+
+//     try {
+//         const {id, ratings, monthYear} = req.body
+
+//         const newRating = await Rating.create(ratings)
+        
+//         const updateEmployee = await Employee.findOneAndUpdate(
+//             {id},
+//             {
+//                 $set:{
+//                     monthYear: monthYear
+//                 }
+//             },
+//             {new: true}
+//         ).populate('rating')
+    
+//         res.status(201).json({message: "Ratings updated successfully", success: true})
+//     } catch (error) {
+//         res.status(400).json({message: "Fault in Rating updation",success: false})
+//     }
+
+// }
 const rateEmployee = async(req,res) => 
-{
+{   
+    const Shownlabels = [
+  "Productivity",
+  "Works Ethics",
+  "Professionalism",
+  "Learning Ability",
+  "Leadership",
+  "Team Work",
+  "Regularity/Attendance",
+  "Confidence",
+  "Team Building",
+  "Growth Oriented",
+  "Technical Knowledge",
+  "Company-Personal Goals Compatibility",
+  "Employees Well Being",
+  "Employee Health"
+];
 
 
     try {
-        const {id, ratings, monthYear} = req.body
+        const spreadsheetId = '1QjvO9Yf8OJX3LAiTqjCfhfGHIbf59vKcDDYL-gcvOtY'
+        const doc = await googleAuth(spreadsheetId)
 
-        const newRating = await Rating.create(ratings)
+        const {id,name, ratings, monthYear, department} = req.body
+
+
+        if(!id || !name || !department|| !ratings || !monthYear) {
+            res.status(400).json({message: "Fields are missing", success: false})
+        }
+
+        const sendData = {ID:id, Name:name, ...ratings, Month:monthYear}
         
-        const updateEmployee = await Employee.findOneAndUpdate(
+        const sheet = doc.sheetsByTitle[department]
+        let addedData
+        const headers = ["ID","Name", ...Shownlabels ,"Month"]
+        
+        
+        if(sheet){
+            const rows = await sheet.getRows()
+            if (rows.length !== 0) {
+                const lastRow = rows[rows.length -1]
+                const lastData = lastRow._rawData.at(-1) || " "
+                
+                if(lastData !== monthYear)
+                    {
+                        await sheet.addRow({ID : "_"})
+                        await sheet.addRow({ID : "_"})
+                    }
+            }
+                
+                addedData = await sheet.addRow(sendData)
+                
+                // console.log(sheet.headerValues)
+            }
+            else {
+                const newSheet = await doc.addSheet({
+                    title: department,
+                    headerValues: headers
+                })
+                
+                
+                addedData = await newSheet.addRow(sendData)
+            }
+            
+            const updateEmployee = await Employee.findOneAndUpdate(
             {id},
             {
                 $set:{
-                    rating: newRating._id,
                     monthYear: monthYear
                 }
             },
             {new: true}
-        ).populate('rating')
-    
-        res.status(201).json({message: "Ratings updated successfully", success: true})
+        )
+        res.status(201).json({message: "Rating added successfully", success: true })
+
+
     } catch (error) {
-        res.status(400).json({message: "Fault in Rating updation",success: false})
+        res.status(400).json({message: "Fault in Rating updation",success: false, error})
     }
 
 }
@@ -256,8 +337,9 @@ const loginEmployee = async (req,res) => {
 }
 
 const feedbackEmployee = async (req,res) => {
-    const doc = await googleAuth('1u4IkNtv_bNd6lJYBPWLBeYlFD5ufmjd-exdiXS1R-kA')
     try {
+        const spreadsheetId = '1u4IkNtv_bNd6lJYBPWLBeYlFD5ufmjd-exdiXS1R-kA'
+        const doc = await googleAuth(spreadsheetId)
         const {id, fullName, suggestion, problem, feedback, department,monthYear} = req.body
         
         if(!id || !fullName || !department || !monthYear)
@@ -271,7 +353,6 @@ const feedbackEmployee = async (req,res) => {
              console.log(photoLocalPath)
         }
         let uploadedPhoto
-        console.log(photoLocalPath)
         
         if(photoLocalPath)
             {
@@ -290,23 +371,36 @@ const feedbackEmployee = async (req,res) => {
                 Suggestion: suggestion,
                 Problem: problem,
                 Feedback: feedback,
-                Photo: uploadedPhoto?.url || ""
+                Photo: uploadedPhoto?.url || "",
+                Month: monthYear
             }
-            console.log(sentFeedback)
             
-            const sheet = doc.sheetsByTitle[monthYear]
+            const sheet = doc.sheetsByTitle[department]
             let addedData
-            const headers = ["ID","Name", "Department", "Suggestion","Problem","Feedback","Photo"]
+            const headers = ["ID","Name", "Department", "Suggestion","Problem","Feedback","Photo","Month"]
+
             
             if(sheet){
+                const rows = await sheet.getRows()
+                const lastRow = rows[rows.length -1]
+                const lastData = lastRow._rawData.at(-1)
+
+                if(lastData !== monthYear)
+                {
+                    await sheet.addRow({ID : "_"})
+                    await sheet.addRow({ID : "_"})
+                }
+
                 addedData = await sheet.addRow(sentFeedback)
+
                 // console.log(sheet.headerValues)
             }
             else {
                 const newSheet = await doc.addSheet({
-                    title: monthYear,
+                    title: department,
                     headerValues: headers
                 })
+
 
                 addedData = await newSheet.addRow(sentFeedback)
             }
@@ -321,8 +415,6 @@ const feedbackEmployee = async (req,res) => {
                     },
                     {new: true}
                 )
-
-                console.log(updateEmployee)
                 res.status(201).json({message:"Feedback accepted",success:true})
             }
             else{

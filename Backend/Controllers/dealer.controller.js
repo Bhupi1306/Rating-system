@@ -132,32 +132,108 @@ const showDealerRating = async(req,res) =>
     }
 }
 
-const rateDealer = async(req,res) => 
-{
+// const rateDealer = async(req,res) => 
+// {
 
 
-    try {
-        const {id, ratings, monthYear} = req.body
-        const newDealerRating = await DealerRating.create(ratings)
+//     try {
+//         const {id, ratings, monthYear} = req.body
+//         const newDealerRating = await DealerRating.create(ratings)
         
-        const updateDealer = await Dealer.findOneAndUpdate(
-            {id},
-            {
-                $set:{
-                    rating: newDealerRating._id,
-                    monthYear: monthYear
-                }
-            },
-            {new: true}
-        ).populate('rating')
+//         const updateDealer = await Dealer.findOneAndUpdate(
+//             {id},
+//             {
+//                 $set:{
+//                     rating: newDealerRating._id,
+//                     monthYear: monthYear
+//                 }
+//             },
+//             {new: true}
+//         ).populate('rating')
 
 
     
-        res.status(201).json({message: "Dealer Ratings updated successfully", success: true})
-    } catch (error) {
-        res.status(400).json({message: "Fault in Dealer Rating updation",error, success: false})
-    }
+//         res.status(201).json({message: "Dealer Ratings updated successfully", success: true})
+//     } catch (error) {
+//         res.status(400).json({message: "Fault in Dealer Rating updation",error, success: false})
+//     }
 
+// }
+
+const rateDealer = async(req,res) => {
+
+    const Shownlabels = [
+    "Sales Turnover",
+    "Service Time",
+    "Customer Relations Index",
+    "insuranceSettlement",
+    "Finance Facilities",
+    "Staff Training",
+    "Staff Behaviour",
+    "Following Esg Guidelines"
+];
+
+    try {
+            const spreadsheetId = '1GWQD7JfxGNPVAhzmUzH7N0Ec2u-jmZoZFFX0N3EKbUY'
+            const doc = await googleAuth(spreadsheetId)
+    
+            const {id,name, ratings, monthYear, department} = req.body
+    
+    
+            if(!id ||!name || !department|| !ratings || !monthYear) {
+                res.status(400).json({message: "Fields are missing", success: false})
+            }
+    
+            const sendData = {ID:id, Name:name, ...ratings, Month:monthYear}
+            
+            const sheet = doc.sheetsByTitle[department]
+            let addedData
+            const headers = ["ID","Name", ...Shownlabels ,"Month"]
+            
+            
+            if(sheet){
+                const rows = await sheet.getRows()
+                if (rows.length !== 0) {
+                    const lastRow = rows[rows.length -1]
+                    const lastData = lastRow._rawData.at(-1) || " "
+                    
+                    if(lastData !== monthYear)
+                        {
+                            await sheet.addRow({ID : "_"})
+                            await sheet.addRow({ID : "_"})
+                        }
+                }
+                    
+                    addedData = await sheet.addRow(sendData)
+                    
+                    // console.log(sheet.headerValues)
+                }
+                else {
+                    const newSheet = await doc.addSheet({
+                        title: department,
+                        headerValues: headers
+                    })
+                    
+                    
+                    addedData = await newSheet.addRow(sendData)
+                }
+
+            const updateDealer = await Dealer.findOneAndUpdate(
+                {id},
+                {
+                    $set:{
+                        monthYear: monthYear
+                    }
+                },
+                {new: true}
+            )
+                
+            res.status(201).json({message: "Rating added successfully", success: true })
+    
+    
+        } catch (error) {
+            res.status(400).json({message: "Fault in Rating updation",success: false, error})
+        }
 }
 
 const downloadDealerRating = async (req,res) => 
@@ -291,6 +367,15 @@ const feedbackDealer = async (req,res) => {
             const headers = ["ID","Name", "Department", "Suggestion","Problem","Feedback","Photo"]
             
             if(sheet){
+                const rows = await sheet.getRows()
+                const lastRow = rows[rows.length -1]
+                const lastData = lastRow._rawData.at(-1)
+
+                if(lastData !== monthYear)
+                {
+                    await sheet.addRow({ID : "_"})
+                    await sheet.addRow({ID : "_"})
+                }
                 addedData = await sheet.addRow(sentFeedback)
                 // console.log(sheet.headerValues)
             }

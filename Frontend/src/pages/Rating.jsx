@@ -151,8 +151,7 @@ export default function Rating() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(ratings)
-    const isValid = labels.every(key => key in ratings && ratings[key]>=0 && ratings[key]<=5)
+    const isValid = Shownlabels.every(key => key in ratings && ratings[key]>=0 && ratings[key]<=5)
     if(!isValid) {
       handleError("All fields are required")
     }else{
@@ -172,7 +171,7 @@ export default function Rating() {
               headers: {
                 'content-type':'application/json'
               },
-            body: JSON.stringify({id,ratings, monthYear})
+            body: JSON.stringify({id,ratings, monthYear, department:selectedDepartment, name:employeeName })
           })
 
       const result = await response.json()
@@ -191,34 +190,40 @@ export default function Rating() {
   };
 
 
-  const getEmployeeRating = async () =>
-  {
-    try {
-      const url = `${API_BASE_URL}employee/download/rating`
-        const response = await fetch(url, {
-              method: "POST",
-              headers: {
-                'content-type':'application/json'
-              },
-            body: JSON.stringify({selectedDepartment})
-          })
+  // const getEmployeeRating = async () =>
+  // {
+  //   try {
+  //     const url = `${API_BASE_URL}employee/download/rating`
+  //       const response = await fetch(url, {
+  //             method: "POST",
+  //             headers: {
+  //               'content-type':'application/json'
+  //             },
+  //           body: JSON.stringify({selectedDepartment})
+  //         })
 
 
-      if(!response.ok) throw new Error("Failed to download")
+  //     if(!response.ok) throw new Error("Failed to download")
 
-        const blob = await response.blob();
-        const urlBlob = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = urlBlob;
-        link.setAttribute('download', `${selectedDepartment}_ratings.csv`);
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+  //       const blob = await response.blob();
+  //       const urlBlob = window.URL.createObjectURL(blob);
+  //       const link = document.createElement('a');
+  //       link.href = urlBlob;
+  //       link.setAttribute('download', `${selectedDepartment}_ratings.csv`);
+  //       document.body.appendChild(link);
+  //       link.click();
+  //       link.remove();
 
-    } catch (error) {
-      handleError("Something went wrong")
-    }
+  //   } catch (error) {
+  //     handleError("Something went wrong")
+  //   }
+  // }
+
+  const getEmployeeRating = () => {
+    // This will open the Google Sheets link in a new tab
+    window.open(`https://docs.google.com/spreadsheets/d/1QjvO9Yf8OJX3LAiTqjCfhfGHIbf59vKcDDYL-gcvOtY/edit?gid=0#gid=0`, '_blank');
   }
+
 
 
 
@@ -255,7 +260,7 @@ export default function Rating() {
       {/* Form shown only if a department is selected */}
       {formVisible && (
         <form onSubmit={handleSubmit}>
-          {labels.map((label, index) => (
+          {Shownlabels.map((label, index) => (
             <div key={label} className="bg-gray-50 p-4 rounded-xl shadow-sm mb-4">
               <h4 className="text-md font-semibold text-gray-700 mb-2">{Shownlabels[index]}</h4>
               <div className="flex justify-between max-w-sm">
@@ -316,13 +321,10 @@ export default function Rating() {
         <h2 className="text-lg font-semibold text-gray-800 mb-4">
           No ratings left for this department
         </h2>
-        <p className="text-gray-600 mb-6">
-          Download the file below.
-        </p>
         <button
         onClick={getEmployeeRating}
         className="inline-block px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition">
-          Download
+          Go to sheets
         </button>
       </div>
       )}

@@ -179,33 +179,37 @@ export default function SupplierRating() {
   };
 
 
-  const getRating = async () =>
-  {
-    try {
-      const url = `${API_BASE_URL}supplier/download/rating`
-        const response = await fetch(url, {
-              method: "POST",
-              headers: {
-                'content-type':'application/json'
-              },
-            body: JSON.stringify({selectedDepartment})
-          })
+  // const getRating = async () =>
+  // {
+  //   try {
+  //     const url = `${API_BASE_URL}supplier/download/rating`
+  //       const response = await fetch(url, {
+  //             method: "POST",
+  //             headers: {
+  //               'content-type':'application/json'
+  //             },
+  //           body: JSON.stringify({selectedDepartment})
+  //         })
 
 
-      if(!response.ok) throw new Error("Failed to download")
+  //     if(!response.ok) throw new Error("Failed to download")
 
-        const blob = await response.blob();
-        const urlBlob = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = urlBlob;
-        link.setAttribute('download', `${selectedDepartment}_dealer_ratings.csv`);
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+  //       const blob = await response.blob();
+  //       const urlBlob = window.URL.createObjectURL(blob);
+  //       const link = document.createElement('a');
+  //       link.href = urlBlob;
+  //       link.setAttribute('download', `${selectedDepartment}_dealer_ratings.csv`);
+  //       document.body.appendChild(link);
+  //       link.click();
+  //       link.remove();
 
-    } catch (error) {
-      handleError("Something went wrong")
-    }
+  //   } catch (error) {
+  //     handleError("Something went wrong")
+  //   }
+  // }
+
+  const getRating = () => {
+    window.open(`https://docs.google.com/spreadsheets/d/1LdspoXQQjtBhoszOzhXb0M1gj1a6z4l8hvKXxZ2N8rE/edit?gid=0#gid=0`, '_blank');
   }
 
 
@@ -325,13 +329,10 @@ const labelFunc = (index, arr) => {
         <h2 className="text-lg font-semibold text-gray-800 mb-4">
           No ratings left for this department
         </h2>
-        <p className="text-gray-600 mb-6">
-          Download the file below.
-        </p>
         <button
         onClick={getRating}
         className="inline-block px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition">
-          Download
+          Go to sheets
         </button>
       </div>
       )}

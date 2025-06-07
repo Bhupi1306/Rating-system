@@ -132,31 +132,110 @@ const showSupplierRating = async(req,res) =>
     }
 }
 
-const rateSupplier = async(req,res) => 
-{
+// const rateSupplier = async(req,res) => 
+// {
+
+
+//     try {
+//         const {id, ratings, monthYear} = req.body
+
+//         const newSupplierRating = await SupplierRating.create(ratings)
+        
+//         const updateSupplier = await Supplier.findOneAndUpdate(
+//             {id},
+//             {
+//                 $set:{
+//                     rating: newSupplierRating._id,
+//                     monthYear: monthYear
+//                 }
+//             },
+//             {new: true}
+//         ).populate('rating')
+    
+//         res.status(201).json({message: "Supplier Ratings updated successfully", success: true})
+//     } catch (error) {
+//         res.status(400).json({message: "Fault in Supplier Rating updation",error, success: false})
+//     }
+
+// }
+
+const rateSupplier = async(req,res) => {
+
+    const Shownlabels = [
+    "Following Esg Guidelines",
+    "Distance of Supplier Plant From Factory in Kilometers(Km)",
+    "Delivery Period Efficiency",
+    "Quality of Product",
+    "Certification of Products",
+    "Credit Facility by Supplier",
+    "Innovation Ability",
+    "Production Capacity",
+    "Customer Support Index"
+];
 
 
     try {
-        const {id, ratings, monthYear} = req.body
+        const spreadsheetId = '1LdspoXQQjtBhoszOzhXb0M1gj1a6z4l8hvKXxZ2N8rE'
+        const doc = await googleAuth(spreadsheetId)
 
-        const newSupplierRating = await SupplierRating.create(ratings)
+        const {id,name, ratings, monthYear, department} = req.body
+
+
+        if(!id ||!name || !department|| !ratings || !monthYear) {
+            res.status(400).json({message: "Fields are missing", success: false})
+        }
+
+        const sendData = {ID:id, Name:name, ...ratings, Month:monthYear}
+        
+        const sheet = doc.sheetsByTitle[department]
+        let addedData
+        const headers = ["ID","Name", ...Shownlabels ,"Month"]
+        
+        
+        if(sheet){
+            const rows = await sheet.getRows()
+            if (rows.length !== 0) {
+                const lastRow = rows[rows.length -1]
+                const lastData = lastRow._rawData.at(-1) || " "
+                
+                if(lastData !== monthYear)
+                    {
+                        await sheet.addRow({ID : "_"})
+                        await sheet.addRow({ID : "_"})
+                    }
+            }
+                
+                addedData = await sheet.addRow(sendData)
+                
+                // console.log(sheet.headerValues)
+            }
+            else {
+                const newSheet = await doc.addSheet({
+                    title: department,
+                    headerValues: headers
+                })
+                
+                
+                addedData = await newSheet.addRow(sendData)
+            }
+            
         
         const updateSupplier = await Supplier.findOneAndUpdate(
             {id},
             {
                 $set:{
-                    rating: newSupplierRating._id,
                     monthYear: monthYear
                 }
             },
             {new: true}
-        ).populate('rating')
-    
-        res.status(201).json({message: "Supplier Ratings updated successfully", success: true})
-    } catch (error) {
-        res.status(400).json({message: "Fault in Supplier Rating updation",error, success: false})
-    }
+        )
+        
+        res.status(201).json({message: "Rating added successfully", success: true })
 
+
+    } catch (error) {
+        res.status(400).json({message: "Fault in Rating updation",success: false, error})
+    }
 }
 
 const downloadSupplierRating = async (req,res) => 
@@ -290,6 +369,15 @@ const feedbackSupplier = async (req,res) => {
             const headers = ["ID","Name", "Department", "Suggestion","Problem","Feedback","Photo"]
             
             if(sheet){
+                const rows = await sheet.getRows()
+                const lastRow = rows[rows.length -1]
+                const lastData = lastRow._rawData.at(-1)
+
+                if(lastData !== monthYear)
+                {
+                    await sheet.addRow({ID : "_"})
+                    await sheet.addRow({ID : "_"})
+                }
                 addedData = await sheet.addRow(sentFeedback)
                 // console.log(sheet.headerValues)
             }
