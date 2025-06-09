@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {ToastContainer} from "react-toastify"
 import { handleError, handleSuccess } from "../utils";
+import Navbar from '../components/Navbar';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Shownlabels = [
@@ -221,7 +222,7 @@ export default function SupplierRating() {
 const labelFunc = (index, arr) => {
   return (
     <>
-          <div className="bg-gray-50 p-4 rounded-xl shadow-sm mb-4">
+    <div className="bg-gray-50 p-4 rounded-xl shadow-sm mb-4">
     <h4 className="text-md font-semibold text-gray-700 mb-2">{Shownlabels[index]}</h4>
     <div className="flex justify-between max-w-sm">
       {arr.map((num) => (
@@ -272,6 +273,8 @@ const labelFunc = (index, arr) => {
 
 
   return (
+    <>
+    <Navbar />
     <div className="max-w-3xl mx-auto p-8 space-y-8 bg-white shadow-xl rounded-2xl">
       {/* Department Dropdown */}
       <div className="mb-6">
@@ -338,5 +341,6 @@ const labelFunc = (index, arr) => {
       )}
       <ToastContainer/>
     </div>
+    </>
   );
 }

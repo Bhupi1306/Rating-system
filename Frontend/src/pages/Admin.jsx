@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 
 export default function HomePage() {
     const navigate = useNavigate()
@@ -9,25 +10,28 @@ export default function HomePage() {
       Add: "/add",
       Delete: "/remove",
       Rating: "/rating",
+      feedback: "https://docs.google.com/spreadsheets/d/1u4IkNtv_bNd6lJYBPWLBeYlFD5ufmjd-exdiXS1R-kA/edit?gid=0#gid=0"
     },
     {
       title: 'Dealers',
       Add: "/dealer/add",
       Delete: "/dealer/remove",
       Rating: "/dealer/rating",
+      feedback: "https://docs.google.com/spreadsheets/d/1LMvhIAGiK0CmWpEmfppRC35CCFZhdP-a3RS4DuRqPSQ/edit?gid=0#gid=0"
     },
     {
       title: 'Suppliers',
       Add: "/supplier/add",
       Delete: "/supplier/remove",
       Rating: "/supplier/rating",
+      feedback: "https://docs.google.com/spreadsheets/d/1zrzoZ28nzet1Ed-fD6p8YjyRasy-JUBpmLb8rgHlcrw/edit?gid=0#gid=0"
     },
   ];
 
 
   const navigationHandler = (label,option, e) => {
     if (e.target.innerText === "Feedback") {
-      window.open(`https://docs.google.com/spreadsheets/d/1u4IkNtv_bNd6lJYBPWLBeYlFD5ufmjd-exdiXS1R-kA/edit?gid=0#gid=0`, '_blank');
+      window.open(option.feedback, '_blank');
     }
     else {
       navigate(option[label])
@@ -36,6 +40,8 @@ export default function HomePage() {
 
 
   return (
+    <>
+    <Navbar />
     <div className="min-h-screen flex items-start mt-8 justify-center bg-gradient-to-br px-4 py-12">
       <div className="grid gap-10 md:grid-cols-3 w-full max-w-6xl">
         {options.map((option) => (
@@ -68,5 +74,6 @@ export default function HomePage() {
         ))}
       </div>
     </div>
+    </>
   );
 }

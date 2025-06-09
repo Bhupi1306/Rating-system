@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import logo from "../assets/Logo.jpg"
 import {ToastContainer} from "react-toastify"
 import { handleError, handleSuccess } from "../utils";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Login = ({setIsAuthenticated}) => {
@@ -12,9 +12,15 @@ const Login = ({setIsAuthenticated}) => {
     email: "",
     password: ""
   })
+
+
   const [redirect, setredirect] = useState(false)
   let next;
+
+
   useEffect(()=>{
+
+
     if(redirect){
       const webAccess = localStorage.getItem("webAccess")
       setIsAuthenticated(true)
@@ -22,7 +28,6 @@ const Login = ({setIsAuthenticated}) => {
       if(webAccess === "Admin") {navigate("/admin", {replace:true})}
       else if(webAccess === "Dealers") {navigate("/dealer/rating")}
       else if(webAccess === "Suppliers") {navigate("/supplier/rating")}
-      // navigate('/rating', {replace: true})
     }
   },[redirect, navigate])
 

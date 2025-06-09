@@ -1,55 +1,69 @@
 import React, { useEffect, useState } from "react";
 import logo from "../assets/Logo.jpg"
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // "Employees", "Dealers", "Suppliers"
 
 
-const Navbar = ({isAdmin, setIsAuthenticated, isAuthenticated}) => {
+const Navbar = () => {
     const navigate = useNavigate()
-    const [navAuth, setNavAuth] = useState(isAuthenticated)
+
+    const [navAuth, setNavAuth] = useState(false)
     const [token, setToken] = useState(localStorage.getItem("token") || "");
 
     const navLinks = "ml-10 hover:text-blue-700 transition duration-300"
     const [webAccess, setwebAccess] = useState("")
+
+    const verify = async () => {
+         const url = `${API_BASE_URL}auth/verify`
+        const response = await fetch(url, {
+              method: "POST",
+              headers: {
+                'content-type':'application/json'
+              },
+            body: JSON.stringify({token})
+          })
+
+      const result = await response.json()
+      return result.success
+    }
     
 
 useEffect(()=>{
-    setTimeout(() => {
-        setNavAuth(isAuthenticated)
-    }, 1000);
 
-    const verifyLogin =  () => {
-        if (!token) {
-          setNavAuth(false)
-        } else {
-          setNavAuth(true)
+    if(!token){
+        setNavAuth(false)
+    }else{
+       const success = verify()
+       if (success){
+            setNavAuth(true)
         }
-      };
-
-      verifyLogin();
+    }
 
     setwebAccess(localStorage.getItem("webAccess"))
-    
-},[navAuth, isAuthenticated, token, navigate,setToken])
+
+},[navAuth, token, navigate,setToken])
+
+useEffect(() => {
+    const currentPath = location.pathname;
+
+    console.log("Current Path:", currentPath);
+},[location.pathname])
 
     const navRoutes = {
         Admin: <>
-        {isAdmin && <li className={navLinks}><a href="/register">Register</a></li>}
         <li className={navLinks}><a href="/register">New user</a> </li> </>,
 
         Employees: <><li className={navLinks}><a href="/rating">Rating</a></li>
-        {isAdmin && <li className={navLinks}><a href="/register">Register</a></li>}
         <li className={navLinks}><a href="/add">Add Employee</a> </li> 
         <li className={navLinks}> <a href="/remove">Remove Employee</a></li> </>,
 
         Suppliers: <><li className={navLinks}><a href="/supplier/rating">Rating</a></li>
-        {isAdmin && <li className={navLinks}><a href="/supplier/register">Register</a></li>}
         <li className={navLinks}><a href="/supplier/add">Add Supplier</a> </li> 
         <li className={navLinks}> <a href="supplier/remove">Remove Supplier</a></li> </>,
 
         Dealers: <><li className={navLinks}><a href="/dealer/rating">Rating</a></li>
-        {isAdmin && <li className={navLinks}><a href="/dealer/register">Register</a></li>}
         <li className={navLinks}><a href="/dealer/add">Add Dealer</a> </li> 
         <li className={navLinks}> <a href="/dealer/remove">Remove Dealer</a></li> </>
     }
@@ -59,13 +73,11 @@ useEffect(()=>{
     const handleClick = () => 
     {
         localStorage.clear()
-        setIsAuthenticated(false)
         setNavAuth(false)
         navigate("/", {replace: true})
-        setTimeout(() => {
-            
+        setTimeout(() => { 
             window.location.reload()
-        }, 100);
+        }, 50);
     }
 
     const logoClick = () => 

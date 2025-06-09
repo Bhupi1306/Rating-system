@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {ToastContainer} from "react-toastify"
 import { handleError, handleSuccess } from "../utils";
+import Navbar from '../components/Navbar';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Shownlabels = [
@@ -207,7 +208,6 @@ export default function DealerRating() {
           })
 
       const result = await response.json()
-      console.log(result)
 
       handleDealerList(selectedDepartment)
         window.scroll({
@@ -265,6 +265,8 @@ export default function DealerRating() {
 
 
   return (
+    <>
+    <Navbar />
     <div className="max-w-3xl mx-auto p-8 space-y-8 bg-white shadow-xl rounded-2xl">
       {/* Department Dropdown */}
       <div className="mb-6">
@@ -366,5 +368,6 @@ export default function DealerRating() {
       )}
       <ToastContainer/>
     </div>
+    </>
   );
 }

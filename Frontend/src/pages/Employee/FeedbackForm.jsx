@@ -3,7 +3,9 @@ import logo from "../../assets/Logo.jpg"
 import {ToastContainer} from "react-toastify"
 import { handleError, handleSuccess } from "../../utils";
 import { Link, useNavigate } from "react-router-dom";
+import Navbar from "../../components/Navbar";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 
 const FeedbackForm = () => {
   const navigate = useNavigate()
@@ -164,6 +166,7 @@ const FeedbackForm = () => {
 
     return (
             <>
+            {<Navbar />}
               {show && 
 
               <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -287,6 +290,12 @@ const FeedbackForm = () => {
                      <button
                         type="submit"
                         className="flex w-full mt-10 justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        onClick={()=> {
+                          return(
+                            localStorage.clear(),
+                            navigate("/home")
+                          )
+                        }}
                       >
                         Home
                       </button>

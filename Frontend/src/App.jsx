@@ -14,66 +14,7 @@ import DealerRating from './pages/DealerRating'
 import SupplierRating from './pages/SupplierRating'
 import Admin from './pages/Admin'
 import {FeedbackForm} from './pages/Employee/feedbackForm'
-// import DeleteDealer from './pages/Dealers/DeleteDealer'
-
-// function App() {
-
-  // const[isAuthenticated, setIsAuthenticated] = useState(false)
-  // const[isLoading, setIsLoading] = useState(false)
-
-
-
-//   const PrivateRoute = ({element}) => {
-//     if(isAuthenticated){
-//       return element
-//     }
-//     return  <Navigate to="/login" />
-//   }
-
-
-//   const router = createBrowserRouter(
-//     createRoutesFromElements(
-//       // <RefreshHandler setIsAuthenticated={setIsAuthenticated}/>
-//       <>
-//       <Route path='/' element={<Layout isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}/>}>
-//         <Route path='' element={<Login/>} />
-//         <Route path='login' element={<Login/>} />
-//         <Route path='register' element={<PrivateRoute element={<Register/>}/>} />
-//         {/* <Route path='register' element={<Register/>} /> */}
-//         <Route path='rating' element={<PrivateRoute element={<Rating/>}/>} />
-//         <Route path='add' element={<PrivateRoute element={<AddEmployee/>}/>} />
-//         <Route path='remove' element={<PrivateRoute element={<DeleteEmployee/>}/>} />
-//       </Route>
-//     </>
-//     )
-//   )
-
-
-//   return (
-//     <>
-//       {/* < RefreshHandler setIsAuthenticated={setIsAuthenticated}/> */}
-//       {/* <Routes> */}
-//         {/* <Route path='/' element={<Navigate To="/login"/>} /> */}
-//         {/* <Route path='/register' element={<Register/> }/> */}
-//           {/* <Route path='/register' element={<PrivateRoute element={<Rating/>}/>} /> */}
-//           {/* <Route path='/login' element={<Login />} /> */}
-//           {/* <Route path='/rating' element={<PrivateRoute element={<Rating/>}/>} /> */}
-//           {/* <Route path='/rating' element={<Rating/> }/> */}
-//           {/* <Route path='/add' element={<AddEmployee/>} /> */}
-//           {/* <Route path='/remove' element={<DeleteEmployee/>} /> */}
-//       {/* </Routes> */}
-
-
-
-//     {/* <RefreshHandler setIsAuthenticated={setIsAuthenticated}/> */}
-//     <RouterProvider router={router}/>
-
-//     </>
-//   )
-// }
-
-
-
+import Home from './pages/Home'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -111,19 +52,23 @@ function App() {
     }
     else {
       console.log("User is not authenticated, redirecting to login.");
-      return <Navigate to="/login" />;
+      return <Navigate to="/" />;
     }
   };
 
+
+  
+
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/" element={<Layout isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />}>
+      <Route path="/">
         
         {/* Public Routes */}
-        <Route path="" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
-        <Route path="login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
-        <Route path="employee/login" element={<EmployeeLogin />} />
-        <Route path="employee/form" element={<FeedbackForm />} />
+        <Route path="" element={<Home/>} />
+        <Route path="home" element={<Home/>} />
+        <Route path="rating/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+        <Route path="feedback/login" element={<EmployeeLogin />} />
+        <Route path="feedback/form" element={<FeedbackForm />} />
 
         {/* Private Routes */}
         <Route element={<PrivateRoute />}>

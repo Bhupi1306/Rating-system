@@ -1,2 +1,19 @@
 @import "tailwindcss";
 
+#home_card{
+    transition: all 0.3s ease-in-out;
+}
+
+#home_card:hover{
+    transform: scale(1.01);
+    background: #4f39f6;
+    color: white;
+}
+
+#home_card:hover #home_card_title{
+    color: white;
+}
+
+#home_card:hover #home_card_content{
+    color: rgb(216, 216, 216);
+}

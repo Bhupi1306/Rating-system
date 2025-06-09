@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {ToastContainer} from "react-toastify"
 import { handleError, handleSuccess } from "../utils";
+import Navbar from "./Navbar";
 let deptNames = [];
 
 const AddObject = (ratingLabelsLink, addLink, object) => {
@@ -126,7 +127,7 @@ const AddObject = (ratingLabelsLink, addLink, object) => {
     return (
             <>
 
-              
+              <Navbar /> 
               <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 ">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                   <h2 className="mt-3 text-center text-2xl/9 font-bold tracking-tight text-gray-900">

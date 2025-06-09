@@ -3,6 +3,7 @@ import logo from "../assets/Logo.jpg"
 import {ToastContainer} from "react-toastify"
 import { handleError, handleSuccess } from "../utils";
 import { useNavigate, Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Register = () => {
@@ -90,6 +91,7 @@ const Register = () => {
             <body class="h-full">
             ```
           */}
+          <Navbar />
 
 
           <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 xl:mx-auto xl:max-w-md">

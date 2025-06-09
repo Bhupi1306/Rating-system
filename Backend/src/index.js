@@ -20,10 +20,10 @@ app.use(bodyParser.json())
 app.use(cors())
 
 
-app.use('/auth',userRouter)
-app.use('/employee',employeeRouter)
-app.use('/dealer',dealerRouter) 
-app.use('/supplier',supplierRouter) 
+app.use('/api/auth',userRouter)
+app.use('/api/employee',employeeRouter)
+app.use('/api/dealer',dealerRouter) 
+app.use('/api/supplier',supplierRouter) 
 
 connectDB()
 .then(() => {

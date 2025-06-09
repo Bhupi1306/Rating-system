@@ -3,6 +3,7 @@ import logo from "../assets/Logo.jpg"
 import {ToastContainer} from "react-toastify"
 import { handleError, handleSuccess } from "../utils";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const EmployeeLogin = () => {
@@ -15,6 +16,7 @@ const EmployeeLogin = () => {
     id: "",
     password: ""
   })
+
 
 
   const handleChange = (e) => {
@@ -66,7 +68,7 @@ const EmployeeLogin = () => {
         localStorage.setItem('id', id)
         localStorage.setItem('department', department)
         localStorage.setItem('monthYear', monthYear)
-        navigate("/employee/form", {replace: true})
+        navigate("/feedback/form", {replace: true})
       }
       else if (error) {
         const details = error?.details[0].message;
