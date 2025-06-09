@@ -8,22 +8,32 @@ export default function HomePage() {
       title: 'Employee',
       Add: "/add",
       Delete: "/remove",
-      Rating: "/rating"
+      Rating: "/rating",
     },
     {
       title: 'Dealers',
       Add: "/dealer/add",
       Delete: "/dealer/remove",
-      Rating: "/dealer/rating"
+      Rating: "/dealer/rating",
     },
     {
       title: 'Suppliers',
       Add: "/supplier/add",
       Delete: "/supplier/remove",
-      Rating: "/supplier/rating"
-
+      Rating: "/supplier/rating",
     },
   ];
+
+
+  const navigationHandler = (label,option, e) => {
+    if (e.target.innerText === "Feedback") {
+      window.open(`https://docs.google.com/spreadsheets/d/1u4IkNtv_bNd6lJYBPWLBeYlFD5ufmjd-exdiXS1R-kA/edit?gid=0#gid=0`, '_blank');
+    }
+    else {
+      navigate(option[label])
+    }
+  }
+
 
   return (
     <div className="min-h-screen flex items-start mt-8 justify-center bg-gradient-to-br px-4 py-12">
@@ -43,10 +53,10 @@ export default function HomePage() {
 
               {/* Sub Buttons */}
               <div className="flex flex-col gap-3 w-full mt-4">
-                {['Add', 'Delete', 'Rating'].map((label) => (
+                {['Add', 'Delete', 'Rating', 'Feedback'].map((label) => (
                   <button
                     key={label}
-                    onClick={()=> navigate(option[label])}
+                    onClick={(e) => navigationHandler(label,option, e)}
                     className={`w-full py-2 rounded-md font-medium transition transform hover:scale-[1.01] bg-indigo-100 text-indigo-600 hover:bg-indigo-600 hover:text-white`}
                   >
                     {label}
