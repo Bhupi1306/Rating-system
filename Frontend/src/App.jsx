@@ -13,7 +13,7 @@ import { AddDealer, AddEmployee, AddSupplier } from './pages/Add'
 import DealerRating from './pages/DealerRating'
 import SupplierRating from './pages/SupplierRating'
 import Admin from './pages/Admin'
-import {FeedbackForm} from './pages/Employee/feedbackForm'
+import {FeedbackForm} from './pages/Employee/FeedbackForm'
 import Home from './pages/Home'
 
 function App() {
